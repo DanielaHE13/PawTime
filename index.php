@@ -1,13 +1,14 @@
 <?php
 require("logica/Administrador.php");
 require("logica/Paseador.php");
+require("logica/Paseo.php");
+require("logica/Estado.php");
+require("logica/Perro.php");
 require("logica/Propietario.php");
-
 session_start();
 ?>
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -31,13 +32,19 @@ $paginas_sin_autenticacion = array(
 );
 
 $paginas_con_autenticacion = array(
-    "presentacion/sesionAdmin.php",
+    "presentacion/sesionAdministrador.php",
     "presentacion/sesionPaseador.php",
     "presentacion/sesionPropietario.php",
     "presentacion/menuPropietario.php",
     "presentacion/propietario/editarFoto.php",
     "presentacion/propietario/misMascotas.php",
-    "presentacion/propietario/agregarMascota.php"
+    "presentacion/propietario/agregarMascota.php",
+    "presentacion/propietario/consultarPropietario.php",
+    "presentacion/paseador/crearPaseador.php",
+    "presentacion/paseador/consultarPaseador.php",
+    "presentacion/propietario/crearPropietario.php",
+    "presentacion/paseo/consultarPaseo.php",
+    "presentacion/paseo/crearPaseo.php",
 );
 
 

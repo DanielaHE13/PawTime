@@ -97,4 +97,3 @@ $propietario->consultar();
 
   </div>
 </div>
-</div>

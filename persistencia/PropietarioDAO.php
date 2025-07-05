@@ -28,12 +28,30 @@ class PropietarioDAO
                 FROM Propietario
                 WHERE correo = '" . $this->correo . "' AND clave = '" . md5($this->clave) . "'";
     }
-
+    
+    public function consultarTodos()
+    {
+        return "SELECT idPropietario, nombre, apellido, telefono, correo, foto, direccion
+                FROM Propietario";
+    }
+    
     public function consultar()
     {
         return "SELECT nombre, apellido, telefono, correo, foto, direccion
                 FROM Propietario
                 WHERE idPropietario = " . $this->id;
+    }
+    
+    public function buscar($filtro){
+        $consulta = "select p.idPropietario, p.nombre, p.apellido, p.correo
+                from Propietario p
+                where " ;
+        foreach ($filtro as $text){
+            $text = trim($text);
+            $consulta .= "(p.nombre like '%" . $text . "%' or p.apellido like '%" .  $text . "%' or p.idPropietario like '%" .  $text . "%' or p.correo like '%" .  $text . "%') and ";
+        }
+        $consulta = substr($consulta, 0, strlen($consulta)-4);
+        return $consulta;
     }
 
     public function editarPerfil()
@@ -52,17 +70,18 @@ class PropietarioDAO
                 set foto = '" . $this -> foto . "'
                 where idPropietario= '" . $this -> id . "'";
     }
-    public function registrar()
-{
-    return "INSERT INTO propietario (nombre, apellido, telefono, correo, clave)
+    public function registrar(){
+    return "INSERT INTO propietario (idPropietario, nombre, apellido, telefono, correo, clave, direccion)
             VALUES (
+                '" . $this->id . "',
                 '" . $this->nombre . "',
                 '" . $this->apellido . "',
                 '" . $this->telefono . "',
                 '" . $this->correo . "',
-                '" . $this->clave . "'
+                MD5('" . $this->clave . "'),
+                '" . $this->direccion . "'
             )";
-}
+    }
 
 
 }

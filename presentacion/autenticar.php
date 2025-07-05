@@ -164,7 +164,7 @@ if (isset($_POST["autenticar"])) {
     <div class="white-panel">
       <div class="login-show">
         <div class="text-center">
-          <h2 class="mt-1 mb-4 text-danger fw-bold">Iniciar sesión</h2>
+          <h2 class="mt-1 mb-4 fw-bold" style="color: #4b0082">Iniciar sesión</h2>
         </div>
 
         <form action="?pid=<?php echo base64_encode('presentacion/autenticar.php') ?>" method="post">
@@ -179,7 +179,7 @@ if (isset($_POST["autenticar"])) {
           </div>
 
           <div class="text-center mb-4">
-            <button type="submit" class="btn btn-danger shadow px-4 py-2" name="autenticar">Iniciar sesión</button>
+            <button type="submit" class="btn shadow-lg px-4 py-2" style="background-color: #4b0082; color: #fff;" name="autenticar">Iniciar sesión</button>
             <div class="mt-3">
               <a class="text-muted text-decoration-none" href="?">Regresar</a>
             </div>

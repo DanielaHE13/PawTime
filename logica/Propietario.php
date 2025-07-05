@@ -49,19 +49,46 @@ class Propietario extends Persona
         $conexion->abrir();
         $conexion->ejecutar($propietarioDAO->consultar());
         $datos = $conexion->registro();
-
+        
         $this->nombre = $datos[0];
         $this->apellido = $datos[1];
         $this->telefono = $datos[2];
         $this->correo = $datos[3];
         $this->foto = $datos[4];
         $this->direccion = $datos[5];
-
+        
         $conexion->cerrar();
     }
+    
+    public function consultarTodos(){
+        $conexion = new Conexion();
+        $propietarioDAO = new PropietarioDAO();
+        $conexion->abrir();
+        $conexion->ejecutar($propietarioDAO->consultarTodos());
+        $propietarios = array();
+        while(($datos = $conexion -> registro()) != null){
+            $propietario = new Propietario($datos[0], $datos[1], $datos[2], $datos[3], $datos[4], $datos[5], $datos[6]);
+            array_push($propietarios, $propietario);
+        }
+        $conexion->cerrar();
+        return $propietarios;
+    }
+    
+    public function buscar($filtro){
+        $conexion = new Conexion();
+        $propietarioDAO = new PropietarioDAO();
+        $conexion -> abrir();
+        $conexion -> ejecutar($propietarioDAO -> buscar($filtro));
+        $propietarios = array();
+        while (($datos = $conexion->registro()) != null) {
+            $propietario = new Propietario($datos[0], $datos[1], $datos[2], "", $datos[3]);
+            array_push($propietarios, $propietario);
+        }
+        $conexion->cerrar();
+        return $propietarios;
+    }
 
-    public function editarPerfil()
-    {
+    public function editarPerfil(){
         $conexion = new Conexion();
         $propietarioDAO = new PropietarioDAO(
             $this->id,
@@ -81,7 +108,7 @@ class Propietario extends Persona
     public function editarFoto(){
         $conexion = new Conexion();
         $conexion -> abrir();
-$propietarioDAO = new PropietarioDAO(
+        $propietarioDAO = new PropietarioDAO(
             $this->id,
             $this->nombre,
             $this->apellido,
@@ -95,19 +122,21 @@ $propietarioDAO = new PropietarioDAO(
         $conexion -> cerrar();
     }
 
-    public function registrar()
-{
+    public function registrar(){
     $conexion = new Conexion();
-    $propietarioDAO = new PropietarioDAO($this->id, $this->nombre, $this->apellido, $this->telefono, $this->correo, $this->clave);
-
+    $propietarioDAO = new PropietarioDAO($this->id, $this->nombre, $this->apellido, $this->telefono, $this->correo, $this->clave, $this->direccion);
     $conexion->abrir();
     $conexion->ejecutar($propietarioDAO->registrar());
-
-    $resultado = $conexion->filas(); // Devuelve el número de filas afectadas
     $conexion->cerrar();
-
-    return $resultado > 0;
-}
+    }
+    
+    public function modificar(){
+        $conexion = new Conexion();
+        $propietarioDAO = new PropietarioDAO($this->id, $this->nombre, $this->apellido, $this->telefono, $this->correo, $this->clave, $this->direccion);
+        $conexion->abrir();
+        $conexion->ejecutar($propietarioDAO->modificar());
+        $conexion->cerrar();
+    }
 
 
 }

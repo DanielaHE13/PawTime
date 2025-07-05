@@ -25,6 +25,6 @@ class AdministradorDAO{
     public function consultar(){
         return "select nombre, apellido, correo
                 from Administrador
-                where idAdmin = '" . $this -> id . "'";
+                where idAdministrador = '" . $this -> id . "'";
     }
 }

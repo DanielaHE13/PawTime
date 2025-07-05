@@ -1,4 +1,4 @@
-<header class="w-100 py-4 position-relative"
+<header class="w-100 py-3 position-relative"
   style="background-color:rgb(212, 179, 236); border-radius: 20px; margin: 10px auto; max-width: 98%; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden;">
 
   <!-- Círculos decorativos -->
