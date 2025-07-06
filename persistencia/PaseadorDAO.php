@@ -73,8 +73,12 @@ class PaseadorDAO {
                 '" . $this->correo . "',
                 MD5('" . $this->clave . "'),
                 '" . $this->foto . "',
-                " . $this->tarifa . ",
-                " . $this->estado . "
+                " . ($this->tarifa !== "" ? $this->tarifa : 0) . ",
+                " . ($this->estado !== "" ? $this->estado : 1) . "
             )";
+    }
+    
+    public function editarFoto(){
+        return "UPDATE paseador SET foto = '" . $this->foto . "' WHERE idPaseador = " . $this->id;
     }
 }

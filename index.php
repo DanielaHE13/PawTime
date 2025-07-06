@@ -35,9 +35,10 @@ $paginas_sin_autenticacion = array(
 
 $paginas_con_autenticacion = array(
     "presentacion/sesionAdministrador.php",
-    "presentacion/sesionPaseador.php",
+    "presentacion/paseador/sesionPaseador.php",
     "presentacion/sesionPropietario.php",
     "presentacion/menuPropietario.php",
+    "presentacion/menuPaseador.php",
     "presentacion/propietario/editarFoto.php",
     "presentacion/propietario/misMascotas.php",
     "presentacion/propietario/misPaseos.php",
@@ -51,6 +52,10 @@ $paginas_con_autenticacion = array(
     "presentacion/propietario/paseadoresFavoritos.php",
     "presentacion/paseador/crearPaseador.php",
     "presentacion/paseador/consultarPaseador.php",
+    "presentacion/paseador/editarPerfil.php",
+    "presentacion/paseador/solicitudesPaseo.php",
+    "presentacion/paseador/historialPaseos.php",
+    "presentacion/paseador/editarFoto.php",
     "presentacion/propietario/crearPropietario.php",
     "presentacion/paseo/consultarPaseo.php",
     "presentacion/paseo/crearPaseo.php",
@@ -59,7 +64,7 @@ $paginas_con_autenticacion = array(
     "presentacion/propietario/editarFoto.php",
     "presentacion/propietario/editarFotoMascota.php",
     "presentacion/propietario/editarMascota.php",
-    "presentacion/propietario/editarObservacionesMascota.php",
+    "presentacion/propietario/editarObservacionesMascota.php"
 );
 
 

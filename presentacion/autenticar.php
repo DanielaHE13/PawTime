@@ -199,7 +199,7 @@ if (isset($_POST["autenticar"])) {
       if ($paseador->autenticar()) {
         $_SESSION["id"] = $paseador->getId();
         $_SESSION["rol"] = "paseador";
-        header("Location: ?pid=" . base64_encode("presentacion/sesionPaseador.php"));
+        header("Location: ?pid=" . base64_encode("presentacion/paseador/sesionPaseador.php"));
       } else {
         $error = true;
       }
@@ -212,6 +212,7 @@ if (isset($_POST["registrar"])) {
   $cedula = $_POST["cedula"];
   $nombre = $_POST["nombre"];
   $apellido = $_POST["apellido"];
+  $telefono = $_POST["telefono"];
   $correo = $_POST["correo_registro"];
   $clave = $_POST["clave_registro"];
   $confirmarClave = $_POST["confirmar_clave"];
@@ -221,18 +222,34 @@ if (isset($_POST["registrar"])) {
   if ($clave === $confirmarClave) {
     try {
       if ($tipoUsuario === "propietario") {
-        $propietario = new Propietario($cedula, $nombre, $apellido, "", $correo, $clave);
-        if ($propietario->registrar()) {
-          $exitoRegistro = true;
-        } else {
-          $errorRegistro = "Error al registrar el propietario";
+        $direccion = ""; // Dirección por defecto vacía, se puede actualizar después
+        $propietario = new Propietario($cedula, $nombre, $apellido, $telefono, $correo, $clave, $direccion);
+        try {
+          $resultado = $propietario->registrar();
+          if ($resultado !== false) {
+            $exitoRegistro = true;
+          } else {
+            $errorRegistro = "Error al registrar el propietario";
+          }
+        } catch (Exception $e) {
+          $errorRegistro = "Error al registrar propietario: " . $e->getMessage();
         }
       } elseif ($tipoUsuario === "paseador") {
-        $paseador = new Paseador($cedula, $nombre, $apellido, "", $correo, $clave);
-        if ($paseador->registrar()) {
-          $exitoRegistro = true;
-        } else {
-          $errorRegistro = "Error al registrar el paseador";
+        // Para paseador necesitamos valores por defecto para los campos requeridos
+        $foto = "default.jpg"; // Foto por defecto
+        $tarifa = 0; // Tarifa inicial
+        $estado = 1; // 1 = activo, 0 = inactivo
+        
+        $paseador = new Paseador($cedula, $nombre, $apellido, $telefono, $correo, $clave, $foto, $tarifa, $estado);
+        try {
+          $resultado = $paseador->registrar();
+          if ($resultado !== false) {
+            $exitoRegistro = true;
+          } else {
+            $errorRegistro = "Error al registrar el paseador";
+          }
+        } catch (Exception $e) {
+          $errorRegistro = "Error al registrar paseador: " . $e->getMessage();
         }
       }
     } catch (Exception $e) {
@@ -321,6 +338,11 @@ if (isset($_POST["registrar"])) {
           <div class="mb-3">
             <label for="apellido" class="form-label">Apellido</label>
             <input type="text" id="apellido" name="apellido" class="form-control" required />
+          </div>
+
+          <div class="mb-3">
+            <label for="telefono" class="form-label">Teléfono</label>
+            <input type="tel" id="telefono" name="telefono" class="form-control" placeholder="Ejemplo: 3001234567" required />
           </div>
 
           <div class="mb-3">

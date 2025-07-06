@@ -124,4 +124,12 @@ class Paseador extends Persona {
     public function setFoto($foto) {
         $this->foto = $foto;
     }
+    
+    public function editarFoto() {
+        $conexion = new Conexion();
+        $paseadorDAO = new PaseadorDAO($this->id, "", "", "", "", "", $this->foto, "", "");
+        $conexion->abrir();
+        $conexion->ejecutar($paseadorDAO->editarFoto());
+        $conexion->cerrar();
+    }
 }
