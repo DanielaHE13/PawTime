@@ -5,6 +5,8 @@ require("logica/Paseo.php");
 require("logica/Estado.php");
 require("logica/Perro.php");
 require("logica/Propietario.php");
+require("logica/Raza.php");
+require("logica/ServicioPaseo.php");
 session_start();
 ?>
 <!DOCTYPE html>
@@ -38,13 +40,26 @@ $paginas_con_autenticacion = array(
     "presentacion/menuPropietario.php",
     "presentacion/propietario/editarFoto.php",
     "presentacion/propietario/misMascotas.php",
+    "presentacion/propietario/misPaseos.php",
     "presentacion/propietario/agregarMascota.php",
     "presentacion/propietario/consultarPropietario.php",
+    "presentacion/propietario/programarPaseo.php",
+    "presentacion/propietario/programarPaseo_Paso2.php",
+    "presentacion/propietario/programarPaseo_Paso3.php",
+    "presentacion/propietario/programarPaseo_Paso4.php",
+    "presentacion/propietario/programarPaseo_Paso5.php",
+    "presentacion/propietario/paseadoresFavoritos.php",
     "presentacion/paseador/crearPaseador.php",
     "presentacion/paseador/consultarPaseador.php",
     "presentacion/propietario/crearPropietario.php",
     "presentacion/paseo/consultarPaseo.php",
     "presentacion/paseo/crearPaseo.php",
+    "presentacion/paseo/editarPaseo.php",
+    "presentacion/propietario/editarPerfil.php",
+    "presentacion/propietario/editarFoto.php",
+    "presentacion/propietario/editarFotoMascota.php",
+    "presentacion/propietario/editarMascota.php",
+    "presentacion/propietario/editarObservacionesMascota.php",
 );
 
 
@@ -62,7 +77,12 @@ if (!isset($_GET["pid"])) {
             include $pid;
         }
     } else {
-        echo "error 404";
+        echo "<div class='alert alert-danger m-4'>";
+        echo "<h4>Error 404 - Página no encontrada</h4>";
+        echo "<p>La página solicitada no existe o no está autorizada:</p>";
+        echo "<code>" . htmlspecialchars($pid) . "</code>";
+        echo "<br><br><a href='index.php' class='btn btn-primary'>Volver al inicio</a>";
+        echo "</div>";
     }
 }
 

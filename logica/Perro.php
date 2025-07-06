@@ -10,6 +10,7 @@ class Perro
     private $foto;
     private $idRaza;
     private $idPropietario;
+    private $raza; // Agregar propiedad para objeto Raza
 
     public function __construct($id = "", $nombre = "", $observaciones = "", $foto = "", $idRaza = "", $idPropietario = "")
     {
@@ -47,6 +48,40 @@ class Perro
         $conexion->cerrar();
     }
 
+    public function editarFoto()
+    {
+        $conexion = new Conexion();
+        $perroDAO = new PerroDAO($this->id, $this->nombre, $this->observaciones, $this->foto, $this->idRaza, $this->idPropietario);
+        $conexion->abrir();
+        $conexion->ejecutar($perroDAO->editarFoto());
+        $conexion->cerrar();
+    }
+
+    public function editarObservaciones()
+    {
+        $conexion = new Conexion();
+        $perroDAO = new PerroDAO($this->id, $this->nombre, $this->observaciones, $this->foto, $this->idRaza, $this->idPropietario);
+        $conexion->abrir();
+        $conexion->ejecutar($perroDAO->editarObservaciones());
+        $conexion->cerrar();
+    }
+
+    public function eliminar()
+    {
+        $conexion = new Conexion();
+        
+        // Primero eliminar todos los paseos relacionados con este perro
+        require_once("persistencia/PaseoDAO.php");
+        $paseoDAO = new PaseoDAO("", "", "", "", "", "", $this->id, "");
+        $conexion->abrir();
+        $conexion->ejecutar($paseoDAO->eliminarPorPerro());
+        
+        // Luego eliminar el perro
+        $perroDAO = new PerroDAO($this->id);
+        $conexion->ejecutar($perroDAO->eliminar());
+        $conexion->cerrar();
+    }
+
     public static function listarPorPropietario($idPropietario)
     {
         $conexion = new Conexion();
@@ -68,10 +103,6 @@ class Perro
         $raza->consultar();
         return $raza->getNombre();
     }
-
-
-
-
 
     // Getters
     public function getId()
@@ -98,6 +129,13 @@ class Perro
     {
         return $this->idPropietario;
     }
+    public function getRaza() {
+        if ($this->raza == null) {
+            $this->raza = new Raza($this->idRaza);
+            $this->raza->consultar();
+        }
+        return $this->raza;
+    }
 
     // Setters
     public function setNombre($nombre)
@@ -119,5 +157,8 @@ class Perro
     public function setIdPropietario($idPropietario)
     {
         $this->idPropietario = $idPropietario;
+    }
+    public function setRaza($raza) {
+        $this->raza = $raza;
     }
 }

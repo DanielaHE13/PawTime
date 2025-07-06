@@ -39,9 +39,18 @@ class PerroDAO {
                 WHERE Propietario_idPropietario = " . $this->idPropietario;
     }
     public function eliminar() {
-    return "DELETE FROM perro WHERE idPerro = " . $this->id;
-}
+        return "DELETE FROM perro WHERE idPerro = " . $this->id;
+    }
 
+    public function editarFoto() {
+        return "UPDATE perro 
+                SET foto = '" . $this->foto . "' 
+                WHERE idPerro = " . $this->id;
+    }
 
-
+    public function editarObservaciones() {
+        return "UPDATE perro 
+                SET observaciones = '" . $this->observaciones . "' 
+                WHERE idPerro = " . $this->id;
+    }
 }

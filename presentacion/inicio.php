@@ -16,7 +16,7 @@
           <li class="nav-item"><a class="nav-link" href="#contacto" style="color: #4b0082">Contacto</a></li>
         </ul>
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="?pid=<?php echo base64_encode('presentacion/registrarse.php'); ?>" style="color: #4b0082">Registrarse</a></li>
+          <li class="nav-item"><a class="nav-link" href="?pid=<?php echo base64_encode('presentacion/autenticar.php'); ?>#registro" style="color: #4b0082">Registrarse</a></li>
           <li class="nav-item">
             <a class="btn nav-link px-3 text-light rounded me-2" style="background-color: #4b0082;" href="?pid=<?php echo base64_encode('presentacion/autenticar.php') ?>">Iniciar sesión</a>
           </li>

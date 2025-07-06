@@ -116,4 +116,12 @@ class Paseador extends Persona {
         $conexion->ejecutar($paseadorDAO->registrar());
         $conexion->cerrar();
     }
+    
+    public function setTarifa($tarifa) {
+        $this->tarifa = $tarifa;
+    }
+    
+    public function setFoto($foto) {
+        $this->foto = $foto;
+    }
 }

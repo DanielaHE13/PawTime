@@ -10,15 +10,25 @@ $propietario->consultar();
   <!-- Sección de perfil -->
   <div class="col-12 col-md-6 d-flex align-items-center mb-3 mb-md-0">
 
-    <img src="imagen/propietarios/<?php echo $propietario->getFoto(); ?>"
-      alt="Foto Propietario"
-      class="rounded-circle shadow"
-      style="width: 100px; height: 100px; object-fit: cover; margin-left: 30px; margin-right: 30px;">
+    <div class="text-center" style="margin-left: 30px; margin-right: 30px;">
+      <img src="imagen/propietarios/<?php echo $propietario->getFoto(); ?>"
+        alt="Foto Propietario"
+        class="rounded-circle shadow"
+        style="width: 100px; height: 100px; object-fit: cover;">
+      
+      <div class="mt-2">
+        <a href="?pid=<?php echo base64_encode('presentacion/propietario/editarFoto.php'); ?>"
+          class="btn btn-sm text-white fw-bold"
+          style="background-color: #4b0082; border-radius: 10px; font-size: 12px;">
+          <i class="fa-solid fa-camera me-1"></i>Editar foto
+        </a>
+      </div>
+    </div>
 
     <div>
       <h3 class="mb-1">
         <strong style="color: #4b0082;">Hola <?php echo $propietario->getNombre() . " " . $propietario->getApellido(); ?></strong>
-        <a href="?pid=<?php echo base64_encode('presentacion/propietario/editarFoto.php'); ?>"
+        <a href="?pid=<?php echo base64_encode('presentacion/propietario/editarPerfil.php'); ?>"
           class="btn btn-sm text-white fw-bold ms-2"
           style="background-color: #4b0082; border-radius: 10px; margin-right: 20px;">
           <i class="fa-solid fa-pen-to-square me-1"></i>
@@ -45,22 +55,22 @@ $propietario->consultar();
       <i class="fa-solid fa-dog me-2 fa-lg"></i>Mis Mascotas
     </a>
 
-    <a href="?pid=<?php echo base64_encode('presentacion/programacion/programaciones.php') ?>"
+    <a href="?pid=<?php echo base64_encode('presentacion/propietario/programarPaseo.php') ?>"
       class="btn  fw-bold px-4 py-2"
       style="color: #4b0082;  border-radius: 12px;">
       <i class="fa-solid fa-calendar-check me-2 fa-lg"></i>Programación
     </a>
 
-    <a href="?pid=<?php echo base64_encode('presentacion/propietario/paseadoresFavoritos.php') ?>"
+    <a href="?pid=<?php echo base64_encode('presentacion/propietario/misPaseos.php') ?>"
       class="btn  fw-bold px-4 py-2"
       style="color: #4b0082;  border-radius: 12px;">
-      <i class="fa-solid fa-heart me-2 fa-lg"></i>Favoritos
+      <i class="fa-solid fa-walking me-2 fa-lg"></i>Mis Paseos
     </a>
 
     <!-- Botón que activa el modal de cerrar sesión -->
     <!-- Botón que abre el modal de cerrar sesión -->
-    <a href="#" class="btn text-white fw-bold px-4 py-2"
-      style="background-color: #4b0082; border-radius: 12px;"
+    <a href="#" class="btn fw-bold px-4 py-2"
+      style="color: #4b0082; border-radius: 12px;"
       data-bs-toggle="modal" data-bs-target="#modalCerrarSesion">
       <i class="fa-solid fa-right-from-bracket me-2 fa-lg"></i>Salir
     </a>

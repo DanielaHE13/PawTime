@@ -39,5 +39,25 @@ abstract class Persona {
     public function getClave(){
         return $this -> clave;
     }
+    
+    public function setId($id) {
+        $this->id = $id;
+    }
+    
+    public function setNombre($nombre) {
+        $this->nombre = $nombre;
+    }
+    
+    public function setApellido($apellido) {
+        $this->apellido = $apellido;
+    }
+    
+    public function setTelefono($telefono) {
+        $this->telefono = $telefono;
+    }
+    
+    public function setCorreo($correo) {
+        $this->correo = $correo;
+    }
 }
 ?>

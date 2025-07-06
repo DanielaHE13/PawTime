@@ -20,5 +20,19 @@ class Estado{
         $this->nombre = $nombre;
     }
     
+    public function setNombre($nombre) {
+        $this->nombre = $nombre;
+    }
     
+    public function consultar() {
+        $conexion = new Conexion();
+        $estadoDAO = new EstadoDAO($this->id);
+        $conexion->abrir();
+        $conexion->ejecutar($estadoDAO->consultar());
+        $datos = $conexion->registro();
+        if ($datos != null) {
+            $this->nombre = $datos[0];
+        }
+        $conexion->cerrar();
+    }
 }
