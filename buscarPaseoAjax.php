@@ -1,7 +1,7 @@
 <?php
 require ("logica/Persona.php");
 require ("logica/Paseo.php");
-
+require ("logica/Paseador.php");
 $filtro = $_GET["filtro"];
 $paseo = new Paseo();
 $filtros = explode(" ", trim($filtro));
@@ -17,7 +17,7 @@ if(count($paseos) > 0){
         $hora_inicio = $pac->getHora_inicio();
         $hora_fin = $pac->getHora_fin();
         $precio_total = $pac->getPrecio_total();
-        $paseador = $pac->getPaseador_idPaseador();
+        $paseador = $pac->getPaseador_idPaseador()->getNombre();
         $perro = $pac->getPerro_idPerro();
         $estado = $pac->getEstado_idEstado();
         
@@ -35,12 +35,30 @@ if(count($paseos) > 0){
         echo "<td>" . $idP . "</td>";
         echo "<td>" . $fecha . "</td>";
         echo "<td>" . $hora_inicio . "-" .$hora_fin. "</td>";
-        echo "<td>" . $precio_total . "</td>";
+        echo "<td>$" . number_format($precio_total, 0, ',', '.') . "</td>";
         echo "<td>" . $paseador . "</td>";
         echo "<td>" . $perro . "</td>";
-        echo "<td>" . $estado . "</td>";
-        echo "<td><a href='modalPaseo.php?idPaseador=" . $pac->getId() . "' class='abrir-modal' data-id='" . $pac->getId() . "' style='color: #4b0082;'><span class='fas fa-eye' title='Ver más información'></span></a> ";
-        echo "<a href='modalEditarPaseador.php?idPaseador=" . $pac->getId() . "' class='abrir-modal' data-id='" . $pac->getId(). "' style='color: #4b0082;'><span class='fa-solid fa-pen-to-square' title='Editar información'></span></a> ";
+        $estadoClass = "";
+        
+        switch (strtolower($estado)) {
+            case "aceptado":
+                $estadoClass = "badge bg-warning text-dark";
+                break;
+            case "en curso":
+                $estadoClass = "badge bg-primary";
+                break;
+            case "completado":
+                $estadoClass = "badge bg-success";
+                break;
+            case "cancelado":
+                $estadoClass = "badge bg-danger";
+                break;
+            default:
+                $estadoClass = "badge bg-secondary";
+                break;
+        }
+        echo "<td><span class='" . $estadoClass . "'>".$estado."</span></td>";
+        echo "<td><a href='modalPaseo.php?idPaseo='" . $pac->getId() . "'&idPaseador=".$pac->getPaseador_idPaseador()->getId()." class='abrir-modal' data-id='" . $pac->getId() . "' style='color: #4b0082;'><span class='fas fa-eye' title='Ver más información'></span></a> ";
         echo "</td>";
         echo "</tr>";
     }

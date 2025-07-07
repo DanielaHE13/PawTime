@@ -102,7 +102,7 @@ class Paseador extends Persona {
         $conexion -> ejecutar($paseadorDAO -> buscar($filtro));
         $paseadores = array();
         while (($datos = $conexion->registro()) != null) {
-            $paseador = new Paseador($datos[0], $datos[1], $datos[2], "", $datos[3], $datos[4], $datos[5]);
+            $paseador = new Paseador($datos[0], $datos[1], $datos[2], "", $datos[3], "", "", $datos[4], $datos[5]);
             array_push($paseadores, $paseador);
         }
         $conexion->cerrar();
@@ -130,6 +130,14 @@ class Paseador extends Persona {
         $paseadorDAO = new PaseadorDAO($this->id, "", "", "", "", "", $this->foto, "", "");
         $conexion->abrir();
         $conexion->ejecutar($paseadorDAO->editarFoto());
+        $conexion->cerrar();
+    }
+    
+    public function actualizarEstado() {
+        $conexion = new Conexion();
+        $paseadorDAO = new PaseadorDAO($this->id,"", "","", "", "", "", "", $this->estado);
+        $conexion->abrir();
+        $conexion->ejecutar($paseadorDAO->actualizarEstado());
         $conexion->cerrar();
     }
 }

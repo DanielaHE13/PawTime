@@ -20,15 +20,50 @@ class PaseoDAO{
         $this->Estado_idEstado = $Estado_idEstado;
     }
     
-    public function consultarTodos(){
-        return "select idPaseo, fecha, hora_inicio, hora_fin, precio_total, Paseador_idPaseador, a.nombre, Perro_idPerro, e.nombre,	Estado_idEstado, s.nombre	
+    public function consultarTodos($rol,$idP){
+        $consulta = "select idPaseo, fecha, hora_inicio, hora_fin, precio_total, Paseador_idPaseador, a.nombre, a.apellido, Perro_idPerro, e.nombre, Estado_idEstado, s.nombre	
                 from paseo p join paseador a on (p.Paseador_idPaseador = a.idPaseador)
                              join perro e on (p.Perro_idPerro = e.idPerro)
                              join estado s on (p.Estado_idEstado = s.idEstado)";
+        if($rol = "paseador"){
+            $consulta .= "where a.idPaseador = " . $idP ;
+        }
+        return $consulta;
+    }
+    
+    public function consultarPorPaseadorProgramados($idP){
+        return "select idPaseo, fecha, hora_inicio, hora_fin, precio_total, Paseador_idPaseador, a.nombre, a.apellido, Perro_idPerro, e.nombre, Estado_idEstado, s.nombre
+                from paseo p join paseador a on (p.Paseador_idPaseador = a.idPaseador)
+                             join perro e on (p.Perro_idPerro = e.idPerro)
+                             join estado s on (p.Estado_idEstado = s.idEstado)
+                where p.Paseador_idPaseador = '" . $idP . "' and p.Estado_idEstado = '1'" ;
+        }
+        
+        public function consultarPorPaseadorPendientes($idP){
+            return "select idPaseo, fecha, hora_inicio, hora_fin, precio_total, Paseador_idPaseador, a.nombre, a.apellido, Perro_idPerro, e.nombre, Estado_idEstado, s.nombre
+                from paseo p join paseador a on (p.Paseador_idPaseador = a.idPaseador)
+                             join perro e on (p.Perro_idPerro = e.idPerro)
+                             join estado s on (p.Estado_idEstado = s.idEstado)
+                where p.Paseador_idPaseador = '" . $idP . "' and p.Estado_idEstado != '1' and p.Estado_idEstado != '4' and p.Estado_idEstado != '3'
+                ORDER BY p.fecha, p.hora_inicio";
+        }
+    
+        public function consultarPorPaseadorCompletados($idP){
+            return "select idPaseo, fecha, hora_inicio, hora_fin, precio_total, Paseador_idPaseador, a.nombre, a.apellido, Perro_idPerro, e.nombre, Estado_idEstado, s.nombre
+                from paseo p join paseador a on (p.Paseador_idPaseador = a.idPaseador)
+                             join perro e on (p.Perro_idPerro = e.idPerro)
+                             join estado s on (p.Estado_idEstado = s.idEstado)
+                where p.Paseador_idPaseador = '" . $idP . "' and p.Estado_idEstado = '3'" ;
+        }
+        
+    public function consultar(){
+        return "SELECT fecha, hora_inicio, hora_fin, precio_total, Paseador_idPaseador, Perro_idPerro, Estado_idEstado
+                FROM Paseo
+                WHERE idPaseo = " . $this->id;
     }
     
     public function buscar($filtro){
-        $consulta = "select p.idPaseo, p.fecha, p.hora_inicio, p.hora_fin, p.precio_total, a.nombre, e.nombre, s.nombre	
+        $consulta = "select p.idPaseo, p.fecha, p.hora_inicio, p.hora_fin, p.precio_total, a.idPaseador, a.nombre, e.nombre, s.nombre	
                 from paseo p join paseador a on (p.Paseador_idPaseador = a.idPaseador)
                              join perro e on (p.Perro_idPerro = e.idPerro)
                              join estado s on (p.Estado_idEstado = s.idEstado)
@@ -36,6 +71,20 @@ class PaseoDAO{
         foreach ($filtro as $text){
             $text = trim($text);
             $consulta .= "(p.idPaseo like '%" . $text . "%' or  p.fecha like '%" .  $text . "%' or p.hora_inicio like '%" .  $text . "%' or p.hora_fin like '%" .  $text . "%' or precio_total like '%" .  $text . "%' or a.nombre like '%" .  $text . "%' or e.nombre like '%" .  $text . "%' or s.nombre like '%" .  $text . "%') and ";
+        }
+        $consulta = substr($consulta, 0, strlen($consulta)-4);
+        return $consulta;
+    }
+    
+    public function buscarPaseador($filtro){
+        $consulta = "select p.idPaseo, p.fecha, p.hora_inicio, p.hora_fin, p.precio_total, a.idPaseador, a.nombre, e.nombre, s.nombre
+                from paseo p join paseador a on (p.Paseador_idPaseador = a.idPaseador)
+                             join perro e on (p.Perro_idPerro = e.idPerro)
+                             join estado s on (p.Estado_idEstado = s.idEstado)
+                where " ;
+        foreach ($filtro as $text){
+            $text = trim($text);
+            $consulta .= "(p.idPaseo like '%" . $text . "%' or  p.fecha like '%" .  $text . "%' or p.hora_inicio like '%" .  $text . "%' or p.hora_fin like '%" .  $text . "%' or precio_total like '%" .  $text . "%' or e.nombre like '%" .  $text . "%' or s.nombre like '%" .  $text . "%') and ";
         }
         $consulta = substr($consulta, 0, strlen($consulta)-4);
         return $consulta;
@@ -73,5 +122,9 @@ class PaseoDAO{
 
     public function eliminarPorPerro(){
         return "DELETE FROM paseo WHERE Perro_idPerro = " . $this->Perro_idPerro;
+    }
+    
+    public function actualizarEstadoPaseo($estado){
+        return "UPDATE `paseo` SET `Estado_idEstado`='" . $estado . "' WHERE idPaseo = '" . $this->id . "'";
     }
 }

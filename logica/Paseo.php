@@ -33,7 +33,7 @@ class Paseo{
     }
 
     public function getPrecio_total()
-    {
+    {   
         return $this->precio_total;
     }
 
@@ -63,21 +63,90 @@ class Paseo{
         $this->Estado_idEstado = $Estado_idEstado;
     }
     
-    public function consultarTodos(){
+    public function consultarTodos($rol,$idP){
         $conexion = new Conexion();
         $paseoDAO = new PaseoDAO();
         $conexion->abrir();
-        $conexion->ejecutar($paseoDAO->consultarTodos());
+        $conexion->ejecutar($paseoDAO->consultarTodos($rol,$idP));
         $paseos = array();
         while(($datos = $conexion -> registro()) != null){
-            $paseador = new Paseador($datos[5],$datos[6]);
-            $perro = new Perro($datos[7],$datos[8]);
-            $estado =  new Estado($datos[9],$datos[10]);
+            $paseador = new Paseador($datos[5],$datos[6],$datos[7]);
+            $perro = new Perro($datos[8],$datos[9]);
+            $estado =  new Estado($datos[10],$datos[11]);
             $paseo = new Paseo($datos[0], $datos[1], $datos[2], $datos[3], $datos[4], $paseador, $perro, $estado);
             array_push($paseos, $paseo);
         }
         $conexion->cerrar();
         return $paseos;
+    }
+    
+    public function consultarPorPaseadorProgramados($idP){
+        $conexion = new Conexion();
+        $paseoDAO = new PaseoDAO();
+        $conexion->abrir();
+        $conexion->ejecutar($paseoDAO->consultarPorPaseadorProgramados($idP));
+        $paseos = array();
+        while(($datos = $conexion -> registro()) != null){
+            $paseador = new Paseador($datos[5],$datos[6],$datos[7]);
+            $perro = new Perro($datos[8],$datos[9]);
+            $estado =  new Estado($datos[10],$datos[11]);
+            $paseo = new Paseo($datos[0], $datos[1], $datos[2], $datos[3], $datos[4], $paseador, $perro, $estado);
+            array_push($paseos, $paseo);
+        }
+        $conexion->cerrar();
+        return $paseos;
+    }
+    
+    public function consultarPorPaseadorPendientes($idP){
+        $conexion = new Conexion();
+        $paseoDAO = new PaseoDAO();
+        $conexion->abrir();
+        $conexion->ejecutar($paseoDAO->consultarPorPaseadorPendientes($idP));
+        $paseos = array();
+        while(($datos = $conexion -> registro()) != null){
+            $paseador = new Paseador($datos[5],$datos[6],$datos[7]);
+            $perro = new Perro($datos[8],$datos[9]);
+            $estado =  new Estado($datos[10],$datos[11]);
+            $paseo = new Paseo($datos[0], $datos[1], $datos[2], $datos[3], $datos[4], $paseador, $perro, $estado);
+            array_push($paseos, $paseo);
+        }
+        $conexion->cerrar();
+        return $paseos;
+    }
+    
+    public function consultarPorPaseadorCompletados($idP){
+        $conexion = new Conexion();
+        $paseoDAO = new PaseoDAO();
+        $conexion->abrir();
+        $conexion->ejecutar($paseoDAO->consultarPorPaseadorCompletados($idP));
+        $paseos = array();
+        while(($datos = $conexion -> registro()) != null){
+            $paseador = new Paseador($datos[5],$datos[6],$datos[7]);
+            $perro = new Perro($datos[8],$datos[9]);
+            $estado =  new Estado($datos[10],$datos[11]);
+            $paseo = new Paseo($datos[0], $datos[1], $datos[2], $datos[3], $datos[4], $paseador, $perro, $estado);
+            array_push($paseos, $paseo);
+        }
+        $conexion->cerrar();
+        return $paseos;
+    }
+    
+    public function consultar(){
+        $conexion = new Conexion();
+        $paseoDAO = new PaseoDAO($this->id);
+        $conexion->abrir();
+        $conexion->ejecutar($paseoDAO->consultar());
+        $datos = $conexion->registro();
+        
+        $this->fecha = $datos[0];
+        $this->hora_inicio = $datos[1];
+        $this->hora_fin = $datos[2];
+        $this->precio_total = $datos[3];
+        $this->Paseador_idPaseador = $datos[4];
+        $this->Perro_idPerro =$datos[5];
+        $this->Estado_idEstado =$datos[6];
+        
+        $conexion->cerrar();
     }
     
     public function buscar($filtro){
@@ -87,7 +156,23 @@ class Paseo{
         $conexion -> ejecutar($paseoDAO -> buscar($filtro));
         $paseos = array();
         while (($datos = $conexion->registro()) != null) {
-            $paseo = new Paseo($datos[0], $datos[1], $datos[2], $datos[3], $datos[4], $datos[5], $datos[6], $datos[7]);
+            $paseador = new Paseador($datos[5],$datos[6]);
+            $paseo = new Paseo($datos[0], $datos[1], $datos[2], $datos[3], $datos[4], $paseador, $datos[7], $datos[8]);
+            array_push($paseos, $paseo);
+        }
+        $conexion->cerrar();
+        return $paseos;
+    }
+    
+    public function buscarPaseador($filtro){
+        $conexion = new Conexion();
+        $paseoDAO = new PaseoDAO();
+        $conexion -> abrir();
+        $conexion -> ejecutar($paseoDAO -> buscarPaseador($filtro));
+        $paseos = array();
+        while (($datos = $conexion->registro()) != null) {
+            $paseador = new Paseador($datos[5],$datos[6]);
+            $paseo = new Paseo($datos[0], $datos[1], $datos[2], $datos[3], $datos[4], $paseador, $datos[7], $datos[8]);
             array_push($paseos, $paseo);
         }
         $conexion->cerrar();
@@ -223,4 +308,13 @@ class Paseo{
         $conexion->ejecutar($paseoDAO->registrar());
         $conexion->cerrar();
     }
+    
+    public function actualizarEstadoPaseo($estado){
+        $conexion = new Conexion();
+        $paseoDAO = new PaseoDAO($this->id);
+        $conexion->abrir();
+        $conexion->ejecutar($paseoDAO->actualizarEstadoPaseo($estado));
+        $conexion->cerrar();
+    }
+    
 }

@@ -72,10 +72,37 @@ $paseadores = $paseador -> consultarTodos();
                <td><?php echo $p -> getApellido()?></td>
                <td><?php echo $p -> getCorreo()?></td>
                <td><?php echo $p -> getTarifa()?></td>
-               <td><?php echo $p -> getEstado()?></td>
-               <td><a href="modalPaseador.php?idPaseador=<?php echo $p->getId(); ?>" class="abrir-modal" data-id="<?php echo $p->getId(); ?>" style="color: #4b0082;"><span class="fas fa-eye" title="Ver más información"></span></a>
-             	   <a href="modalEditarPaseador.php?idPaseador=<?php echo $p->getId(); ?>" class="abrir-modal" data-id="<?php echo $p->getId(); ?>" style="color: #4b0082;"><span class="fa-solid fa-pen-to-square" title="Editar información"></span></a>
-             	   </td>
+               <?php
+                $estadoClass = "";
+                
+                if($p -> getEstado()==1) {
+                        $estadoClass = "badge bg-success";
+                        $estado = "Habilitado";
+                }else{
+                        $estadoClass = "badge bg-danger";
+                        $estado = "Inhabilitado";
+                }
+                ?>
+                
+                <td>
+                	<div id="estado<?php echo $p->getId(); ?>">
+                	<span class="<?php echo $estadoClass; ?>"><?php echo $estado; ?></span>  
+                	</div>              
+                </td>
+               <td>
+               <div class="d-flex align-items-center gap-2">
+               <a href="modalPaseador.php?idPaseador=<?php echo $p->getId(); ?>" class="abrir-modal" data-id="<?php echo $p->getId(); ?>" style="color: #4b0082;"><span class="fas fa-eye" title="Ver más información"></span></a>
+               <a href="modalEditarPaseador.php?idPaseador=<?php echo $p->getId(); ?>" class="abrir-modal" data-id="<?php echo $p->getId(); ?>" style="color: #4b0082;"><span class="fa-solid fa-pen-to-square" title="Editar información"></span></a>
+             	  <div class="d-flex gap-2">
+                        <button type="button" id="1<?php echo $p->getId(); ?>" class="btn btn-success btn-sm rounded-circle btn-estado" data-id="<?php echo $p->getId(); ?>" data-estado="1" title="Habilitar paseador"<?php echo ($p -> getEstado() == 1) ? 'disabled' : ''; ?>>
+                            <i class="fa-solid fa-user-check"></i>
+                        </button>
+                        <button type="button" id="0<?php echo $p->getId(); ?>" class="btn btn-danger btn-sm rounded-circle btn-estado" data-id="<?php echo $p -> getId()?>" data-estado="0" title="Inhabilitar paseador"<?php echo ($p -> getEstado() == 0) ? 'disabled' : ''; ?>>
+                            <i class="fa-solid fa-user-slash"></i>
+                        </button>
+                    </div>
+             	  </div>
+             	</td>
             </tr>
             <?php }?>
        </table>
@@ -96,7 +123,7 @@ $(document).ready(function(){
 			console.log(ruta);
 			$("#resultados").load(ruta);
 		}else{
-			$("#resultados").html(tablaOriginal);
+			$("#resultados").load("actualizarPaseadorAjax.php");
 		}
 	});
  $('body').on('click', '.abrir-modal', function(e) {
@@ -110,6 +137,21 @@ $(document).ready(function(){
   document.getElementById('modalPaseador').addEventListener('hidden.bs.modal', function () {
   document.getElementById('modalContent').innerHTML = '';
   });
+   $('body').on('click', '.btn-estado', function (e) {
+    const idPaseador = $(this).data('id');
+    const nuevoEstado = $(this).data('estado');
+    const ruta = "actualizarEstadoAjax.php?estado=" + nuevoEstado + "&idP=" + idPaseador;
+    console.log(ruta);
+    $("#estado" + idPaseador).load(ruta, function () {
+        if (nuevoEstado == 1) {
+            $("#1" + idPaseador).prop("disabled", true);
+            $("#0" + idPaseador).prop("disabled", false);
+        } else {
+            $("#1" + idPaseador).prop("disabled", false);
+            $("#0" + idPaseador).prop("disabled", true);
+        }
+    	});
+	});
 });
 </script>
 </body>

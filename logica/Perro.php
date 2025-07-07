@@ -161,4 +161,20 @@ class Perro
     public function setRaza($raza) {
         $this->raza = $raza;
     }
+    
+    public function perritosPorPaseo($fecha,$hora_inicio,$paseador) {
+        $conexion = new Conexion();
+        $perroDAO = new PerroDAO();
+        $conexion->abrir();
+        $conexion->ejecutar($perroDAO->perritosPorPaseo($fecha,$hora_inicio,$paseador));
+        $perritos = array();
+        while(($datos = $conexion -> registro()) != null){
+            $raza = new Raza($datos[2],$datos[3]);
+            $propietario = new Propietario($datos[4],$datos[5],$datos[6]);
+            $perrito = new Perro("", $datos[0], "", $datos[1], $raza, $propietario);
+            array_push($perritos, $perrito);
+        }
+        $conexion->cerrar();
+        return $perritos;
+    }
 }

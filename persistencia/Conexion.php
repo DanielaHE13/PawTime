@@ -4,7 +4,7 @@ class Conexion {
     private $resultado;
     
     public function abrir() {
-        $this->conexion = new mysqli("localhost", "root", "", "pawtime", 3307);
+        $this->conexion = new mysqli("localhost", "root", "", "pawtime");
         if ($this->conexion->connect_error) {
             throw new Exception("Error de conexión: " . $this->conexion->connect_error);
         }

@@ -81,4 +81,8 @@ class PaseadorDAO {
     public function editarFoto(){
         return "UPDATE paseador SET foto = '" . $this->foto . "' WHERE idPaseador = " . $this->id;
     }
+    
+    public function actualizarEstado(){
+        return "UPDATE paseador SET estado = '" . $this->estado . "' WHERE idPaseador = " . $this->id;
+    }
 }

@@ -33,9 +33,26 @@ if(count($paseadores) > 0){
         echo "<td>" . $apellido . "</td>";
         echo "<td>" . $correo . "</td>";
         echo "<td>" . $tarifa . "</td>";
-        echo "<td>" . $estado . "</td>";
+        $estadoClass = "";
+        
+        if($pac -> getEstado()==1) {
+            $estadoClass = "badge bg-success";
+            $estado = "Habilitado";
+        }else{
+            $estadoClass = "badge bg-danger";
+            $estado = "Inhabilitado";
+        }
+        echo "<td><div id='estado" . $pac->getId() . "'><span class='" . $estadoClass . "'>" . $estado . "</span></div></td>";
         echo "<td><a href='modalPaseador.php?idPaseador=" . $pac->getId() . "' class='abrir-modal' data-id='" . $pac->getId() . "' style='color: #4b0082;'><span class='fas fa-eye' title='Ver más información'></span></a> ";
         echo "<a href='modalEditarPaseador.php?idPaseador=" . $pac->getId() . "' class='abrir-modal' data-id='" . $pac->getId(). "' style='color: #4b0082;'><span class='fa-solid fa-pen-to-square' title='Editar información'></span></a> ";
+        echo "<div class='d-inline-flex gap-2'>";
+        echo "<button type='button' id='1" . $pac->getId() . "' class='btn btn-success btn-sm rounded-circle btn-estado' data-id='" . $pac->getId() . "' data-estado='1' title='Habilitar paseador' " . ($pac->getEstado() == 1 ? "disabled" : "") . ">
+            <i class='fa-solid fa-user-check'></i>
+            </button>";        
+        echo "<button type='button' id='0" . $pac->getId() . "' class='btn btn-danger btn-sm rounded-circle btn-estado' data-id='" . $pac->getId() . "' data-estado='0' title='Inhabilitar paseador' " . ($pac->getEstado() == 0 ? "disabled" : "") . ">
+        <i class='fa-solid fa-user-slash'></i>
+      </button>";
+        echo "</div>";
         echo "</td>";
         echo "</tr>";
     }

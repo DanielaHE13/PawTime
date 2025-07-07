@@ -12,7 +12,7 @@ $administrador->consultar();
       <div>
         <h3 class="mb-1">
           <strong style="color: #4b0082;">Hola <?php echo $administrador->getNombre() . " " . $administrador->getApellido(); ?></strong>
-          <a href="?pid=<?php echo base64_encode('presentacion/propietario/editarFoto.php'); ?>"
+          <a href="?pid=<?php echo base64_encode('presentacion/administrador/editarPerfil.php'); ?>"
              class="btn btn-sm text-white fw-bold ms-2"
              style="background-color: #4b0082; border-radius: 10px; margin-right: 20px;">
             <i class="fa-solid fa-pen-to-square me-1"></i>
@@ -62,7 +62,6 @@ $administrador->consultar();
         </a>
         <ul class="dropdown-menu" style="background-color: #E3CFF5;">
           <li><a class="dropdown-item" style="color: #4b0082;" href="?pid=<?php echo base64_encode('presentacion/paseo/consultarPaseo.php'); ?>">Consultar</a></li>
-          <li><a class="dropdown-item" style="color: #4b0082;" href="?pid=<?php echo base64_encode('presentacion/paseo/crearPaseo.php'); ?>">Crear</a></li>
         </ul>
       </li>
     

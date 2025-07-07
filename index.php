@@ -54,7 +54,6 @@ $paginas_con_autenticacion = array(
     "presentacion/paseador/consultarPaseador.php",
     "presentacion/paseador/editarPerfil.php",
     "presentacion/paseador/solicitudesPaseo.php",
-    "presentacion/paseador/historialPaseos.php",
     "presentacion/paseador/editarFoto.php",
     "presentacion/propietario/crearPropietario.php",
     "presentacion/paseo/consultarPaseo.php",
@@ -64,7 +63,11 @@ $paginas_con_autenticacion = array(
     "presentacion/propietario/editarFoto.php",
     "presentacion/propietario/editarFotoMascota.php",
     "presentacion/propietario/editarMascota.php",
-    "presentacion/propietario/editarObservacionesMascota.php"
+    "presentacion/propietario/editarObservacionesMascota.php",
+    "presentacion/paseador/consultarPaseo.php",
+    "presentacion/paseador/paseosPendientes.php",
+    "factura.php",
+    "presentacion/paseador/paseosCompletados.php"
 );
 
 

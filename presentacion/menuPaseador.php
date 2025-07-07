@@ -48,14 +48,37 @@ $paseador->consultar();
     </div>
 
   </div>
-
-  <!-- Sección de navegación -->
-  <div class="col-12 col-md-6 d-flex flex-wrap justify-content-center justify-content-md-end gap-3">
-    <a href="?pid=<?php echo base64_encode('presentacion/paseador/solicitudesPaseo.php') ?>"
-      class="btn fw-bold px-4 py-2"
-      style="color: #4b0082; border-radius: 12px;">
-      <i class="fa-solid fa-inbox me-2 fa-lg"></i>Solicitudes
-    </a>
+      <div class="col-12 col-md-6 d-flex flex-wrap justify-content-center justify-content-md-end gap-3">
+        <div class="dropdown">
+      <button class="btn fw-bold px-4 py-2 dropdown-toggle"
+              type="button"
+              id="dropdownSolicitudes"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              style="color: #4b0082; border-radius: 12px;">
+        <i class="fa-solid fa-list me-2 fa-lg"></i>Gestionar paseos
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownSolicitudes">
+        <li>
+          <a class="dropdown-item"
+             href="?pid=<?php echo base64_encode('presentacion/paseador/solicitudesPaseo.php') ?>">
+             <i class="fa-solid fa-inbox me-2 text-purple"></i>Solicitudes
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item"
+             href="?pid=<?php echo base64_encode('presentacion/paseador/paseosPendientes.php') ?>">
+             <i class="fa-solid fa-calendar-check me-2 text-purple"></i>Pendientes
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item"
+             href="?pid=<?php echo base64_encode('presentacion/paseador/paseosCompletados.php') ?>">
+             <i class="fa-solid fa-check me-2 text-purple"></i>Completados
+          </a>
+        </li>
+      </ul>
+    </div>
 
     <a href="?pid=<?php echo base64_encode('presentacion/paseador/editarPerfil.php') ?>"
       class="btn fw-bold px-4 py-2"
@@ -63,10 +86,10 @@ $paseador->consultar();
       <i class="fa-solid fa-user-edit me-2 fa-lg"></i>Mi Perfil
     </a>
 
-    <a href="?pid=<?php echo base64_encode('presentacion/paseador/historialPaseos.php') ?>"
+    <a href="?pid=<?php echo base64_encode('presentacion/paseador/consultarPaseo.php') ?>"
       class="btn fw-bold px-4 py-2"
       style="color: #4b0082; border-radius: 12px;">
-      <i class="fa-solid fa-history me-2 fa-lg"></i>Historial
+      <i class="fa-solid fa-history me-2 fa-lg"></i>Historial de paseos
     </a>
 
     <!-- Botón que abre el modal de cerrar sesión -->

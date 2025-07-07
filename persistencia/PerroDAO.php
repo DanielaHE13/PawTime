@@ -53,4 +53,12 @@ class PerroDAO {
                 SET observaciones = '" . $this->observaciones . "' 
                 WHERE idPerro = " . $this->id;
     }
+    
+    public function perritosPorPaseo($fecha, $hora_inicio, $paseador) {
+        return "select e.nombre, e.foto, r.idRaza, r.nombre, o.idPropietario, o.nombre, o.apellido
+                from Perro e join Paseo p on (p.Perro_idPerro = e.idPerro)
+			                 join propietario o on (e.Propietario_idPropietario = o.idPropietario)
+                             join raza r on (e.Raza_idRaza = r.idRaza)
+                where p.fecha = '".$fecha."' and p.hora_inicio = '".$hora_inicio."' and p.Paseador_idPaseador = '".$paseador."'";
+    }
 }

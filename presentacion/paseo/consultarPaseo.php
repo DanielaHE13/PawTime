@@ -8,7 +8,7 @@ if($_SESSION["rol"] != "administrador"){
 include ('presentacion/encabezado.php');
 include ('presentacion/menuAdministrador.php');
 $paseo = new Paseo();
-$paseos = $paseo -> consultarTodos();
+$paseos = $paseo -> consultarTodos($_SESSION["rol"],$_SESSION["id"]);
 ?>
 
 <div class="container mt-1">
@@ -24,7 +24,13 @@ $paseos = $paseo -> consultarTodos();
     </div>
   </div>
 </div>
-
+<div class="container mt-1">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="input-group"></div>
+    </div>
+  </div>
+</div>
 <div class="container">
   <div id="resultados">
   	<h5 class="card-title" style="color: #4b0082;">Paseo</h5>
@@ -47,10 +53,37 @@ $paseos = $paseo -> consultarTodos();
                <td><?php echo $p -> getFecha()?></td>
                <td><?php echo $p -> getHora_inicio() . "-" . $p -> getHora_fin()?></td>
                <td><?php echo $p -> getPrecio_total()?></td>
-               <td><?php echo $p -> getPaseador_idPaseador()->getNombre()?></td>
+               <td><?php echo $p -> getPaseador_idPaseador()->getNombre(). " " .$p -> getPaseador_idPaseador()->getApellido()?></td>
                <td><?php echo $p -> getPerro_idPerro()->getNombre()?></td>
-               <td><?php echo $p -> getEstado_idEstado()->getNombre()?></td>
-               <td><a href="modalPaseo.php?idPaseo=<?php echo $p->getId(); ?>" class="abrir-modal" data-id="<?php echo $p->getId(); ?>" style="color: #4b0082;"><span class="fas fa-eye" title="Ver más información"></span></a>
+               <?php
+                $estadoNombre = $p->getEstado_idEstado()->getNombre();
+                $estadoClass = "";
+                
+                switch (strtolower($estadoNombre)) {
+                    case "programado":
+                        $estadoClass = "badge bg-warning text-dark";
+                        break;
+                    case "en curso":
+                        $estadoClass = "badge bg-primary";
+                        break;
+                    case "completado":
+                        $estadoClass = "badge bg-success";
+                        break;
+                    case "cancelado":
+                        $estadoClass = "badge bg-danger";
+                        break;
+                    default:
+                        $estadoClass = "badge bg-secondary";
+                        break;
+                }
+                ?>
+                
+                <td>
+                    <span class="<?php echo $estadoClass; ?>">
+                        <?php echo $estadoNombre; ?>
+                    </span>
+                </td>
+               <td><a href="modalPaseo.php?idPaseo=<?php echo $p->getId(); ?>&idPaseador=<?php echo $p->getPaseador_idPaseador()->getId(); ?>" class="abrir-modal" data-id="<?php echo $p->getId(); ?>" style="color: #4b0082;"><span class="fas fa-eye" title="Ver más información"></span></a>
              	   </td>
             </tr>
             <?php }?>
