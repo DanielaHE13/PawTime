@@ -53,6 +53,9 @@ $paginas_con_autenticacion = array(
     "presentacion/propietario/paseadoresFavoritos.php",
     "presentacion/paseador/crearPaseador.php",
     "presentacion/paseador/consultarPaseador.php",
+    "presentacion/paseador/editarPaseadorAjax.php",
+    "presentacion/paseador/editarPaseadorAjaxSimple.php",
+    "presentacion/paseador/editarPaseadorDebug.php",
     "presentacion/paseador/editarPerfil.php",
     "presentacion/paseador/solicitudesPaseo.php",
     "presentacion/paseador/editarFoto.php",
@@ -72,6 +75,7 @@ $paginas_con_autenticacion = array(
     "presentacion/estadisticas/estadisticasGeneral.php",
     "presentacion/estadisticas/estadisticasPropias.php",
     "presentacion/paseador/editarFotoObligatorio.php",
+    "presentacion/administrador/editarPerfil.php",
 );
 
 

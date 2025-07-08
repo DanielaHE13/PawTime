@@ -23,8 +23,25 @@ class AdministradorDAO{
     }
     
     public function consultar(){
-        return "select nombre, apellido, correo
+        return "select nombre, apellido, correo, telefono
                 from Administrador
                 where idAdministrador = '" . $this -> id . "'";
+    }
+    
+    public function editarPerfil(){
+        $sql = "UPDATE Administrador SET 
+                    nombre = '" . $this->nombre . "',
+                    apellido = '" . $this->apellido . "',
+                    correo = '" . $this->correo . "',
+                    telefono = '" . $this->telefono . "'";
+        
+        // Solo actualizar la clave si se proporciona
+        if (!empty($this->clave)) {
+            $sql .= ", clave = '" . md5($this->clave) . "'";
+        }
+        
+        $sql .= " WHERE idAdministrador = " . $this->id;
+        
+        return $sql;
     }
 }

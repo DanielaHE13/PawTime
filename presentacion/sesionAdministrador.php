@@ -3,7 +3,7 @@ if($_SESSION["rol"] != "administrador"){
     header("Location: ?pid=" . base64_encode("presentacion/noAutorizado.php"));
 }
 ?>
-<body>
+<body style="background: linear-gradient(to bottom, #E3CFF5, #CFA8F5); min-height: 100vh; font-family: 'Mukta', sans-serif;">
 <?php 
 include ("presentacion/encabezado.php");
 include ("presentacion/menuAdministrador.php");
@@ -26,12 +26,14 @@ $administrador->consultar();
                 Selecciona una opción del menú para comenzar 🛠️🐾
             </p>
         </div>
-
-        <div class="text-center mt-4">
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-12 text-center mt-4">
             <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
             <dotlottie-player src="https://lottie.host/0d343a3a-ca65-4963-93fb-5ca775492199/nht5Ri9Lxh.lottie"
                               background="transparent" speed="1"
-                              style="width: 300px; height: 300px" loop autoplay></dotlottie-player>
+                              style="width: 300px; height: 300px; margin: 0 auto; display: block;" loop autoplay></dotlottie-player>
         </div>
     </div>
 </div>

@@ -3,7 +3,7 @@ if($_SESSION["rol"] != "administrador"){
     header("Location: ?pid=" . base64_encode("presentacion/noAutorizado.php"));
 }
 ?>
-<body>
+<body style="background: linear-gradient(to bottom, #E3CFF5, #CFA8F5); min-height: 100vh; font-family: 'Mukta', sans-serif;">
 <?php 
 include ('presentacion/encabezado.php');
 include ('presentacion/menuAdministrador.php');

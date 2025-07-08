@@ -35,6 +35,14 @@ $administrador->consultar();
 	
 	<li class="nav-item me-4">
       <a class="nav-link fw-bold fs-5" 
+         href="?pid=<?php echo base64_encode('presentacion/sesionAdministrador.php'); ?>" 
+         style="color: #4b0082; border-radius: 12px;">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+	
+	<li class="nav-item me-4">
+      <a class="nav-link fw-bold fs-5" 
          href="?pid=<?php echo base64_encode('presentacion/estadisticas/estadisticasGeneral.php'); ?>" 
          style="color: #4b0082; border-radius: 12px;">
         <i class="fa-solid fa-chart-line me-1"></i> Estadisticas
@@ -56,7 +64,7 @@ $administrador->consultar();
       <li class="nav-item dropdown me-4">
         <a class="nav-link dropdown-toggle fs-5 fw-bold" href="#" role="button" data-bs-toggle="dropdown"
            aria-expanded="false" style="color: #4b0082; border-radius: 12px;">
-          <i class="fa-solid fa-user me-1"></i><i class="fa-solid fa-dog"></i> Propietario
+          <i class="fa-solid fa-user me-1"></i></i> Propietario
         </a>
         <ul class="dropdown-menu" style="background-color: #E3CFF5;">
           <li><a class="dropdown-item" style="color: #4b0082;" href="?pid=<?php echo base64_encode('presentacion/propietario/consultarPropietario.php'); ?>">Consultar</a></li>
@@ -67,7 +75,7 @@ $administrador->consultar();
       <li class="nav-item dropdown me-4">
         <a class="nav-link dropdown-toggle fw-bold fs-5" href="#" role="button" data-bs-toggle="dropdown"
            aria-expanded="false" style="color: #4b0082; border-radius: 12px;">
-          <i class="fa-solid fa-person-walking me-1"></i><i class="fa-solid fa-dog"></i> Paseo
+          </i><i class="fa-solid fa-dog"></i> Paseo
         </a>
         <ul class="dropdown-menu" style="background-color: #E3CFF5;">
           <li><a class="dropdown-item" style="color: #4b0082;" href="?pid=<?php echo base64_encode('presentacion/paseo/consultarPaseo.php'); ?>">Consultar</a></li>

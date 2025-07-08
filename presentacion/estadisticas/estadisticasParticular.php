@@ -9,15 +9,15 @@ $totalGanado = $paseo->totalGanado($_SESSION['id']);
   <!-- Indicadores -->
   <div class="row text-center mb-4">
     <div class="col-md-4">
-      <div class="bg-white shadow rounded p-4">
-        <h5 class="text-muted">Total de Paseos</h5>
-        <h2 class="fw-bold text-purple"><?php echo $totalPaseos; ?></h2>
+      <div class="bg-white shadow rounded p-4" style="border-left: 5px solid #4b0082;">
+        <h5 style="color: #6a0dad;">Total de Paseos</h5>
+        <h2 class="fw-bold" style="color: #4b0082;"><?php echo $totalPaseos; ?></h2>
       </div>
     </div>
     <div class="col-md-4">
-      <div class="bg-white shadow rounded p-4">
-        <h5 class="text-muted">Total Ganado</h5>
-        <h2 class="fw-bold text-success">$<?php echo number_format($totalGanado, 0, ',', '.'); ?></h2>
+      <div class="bg-white shadow rounded p-4" style="border-left: 5px solid #8a2be2;">
+        <h5 style="color: #6a0dad;">Total Ganado</h5>
+        <h2 class="fw-bold" style="color: #8a2be2;">$<?php echo number_format($totalGanado, 0, ',', '.'); ?></h2>
       </div>
     </div>
   </div>
@@ -25,8 +25,8 @@ $totalGanado = $paseo->totalGanado($_SESSION['id']);
   <!-- Paseos por Mes (Gráfico de Línea) -->
   <div class="row">
     <div class="col">
-      <div class="bg-white shadow rounded p-4">
-        <h4 class="text-center mb-3 text-purple">Paseos por Mes (Últimos 6 meses)</h4>
+      <div class="bg-white shadow rounded p-4" style="border-top: 4px solid #4b0082;">
+        <h4 class="text-center mb-3" style="color: #4b0082;">Paseos por Mes (Últimos 6 meses)</h4>
         <div id="chart_paseos_mes" style="height: 400px;"></div>
       </div>
     </div>
@@ -48,10 +48,29 @@ function drawLineChartPaseosPorMes() {
 
   var options = {
     title: 'Paseos por Mes',
+    titleTextStyle: {
+      color: '#4b0082',
+      fontSize: 16,
+      bold: true
+    },
     curveType: 'function',
-    legend: { position: 'bottom' },
-    colors: ['#6a0dad'],
-    backgroundColor: 'transparent'
+    legend: { 
+      position: 'bottom',
+      textStyle: { color: '#4b0082' }
+    },
+    colors: ['#6a0dad', '#8a2be2', '#9370db'],
+    backgroundColor: 'transparent',
+    hAxis: {
+      textStyle: { color: '#4b0082' },
+      titleTextStyle: { color: '#4b0082' }
+    },
+    vAxis: {
+      textStyle: { color: '#4b0082' },
+      titleTextStyle: { color: '#4b0082' },
+      gridlines: { color: '#e3cff5' }
+    },
+    pointSize: 8,
+    pointShape: 'circle'
   };
 
   var chart = new google.visualization.LineChart(document.getElementById('chart_paseos_mes'));

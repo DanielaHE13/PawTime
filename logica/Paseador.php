@@ -99,6 +99,7 @@ class Paseador extends Persona {
             $this->telefono,
             $this->correo,
             "", // clave no se actualiza aquí
+            "", // foto no se actualiza aquí
             $this->tarifa,
             $this->estado
             );

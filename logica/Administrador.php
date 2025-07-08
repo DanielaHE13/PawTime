@@ -33,6 +33,22 @@ class Administrador extends Persona {
         $this -> nombre = $datos[0];
         $this -> apellido = $datos[1];
         $this -> correo = $datos[2];
+        $this -> telefono = $datos[3];
+        $conexion->cerrar();
+    }
+    
+    public function editarPerfil(){
+        $conexion = new Conexion();
+        $administradorDAO = new AdministradorDAO(
+            $this->id,
+            $this->nombre,
+            $this->apellido,
+            $this->telefono,
+            $this->correo,
+            $this->clave // Ahora se incluye la clave
+        );
+        $conexion->abrir();
+        $conexion->ejecutar($administradorDAO->editarPerfil());
         $conexion->cerrar();
     }
 }
