@@ -53,40 +53,26 @@ $foto_path = "imagen/perros/" . $perro->getFoto();
 
 <div class="modal-content">
     <div class="modal-header" style='color: #4b0082;'>
-        <h4 class="modal-title text-2xl font-weight-bold">Detalles del Paseo</h4>
+        <h4 class="modal-title text-2xl font-weight-bold">Información del Perrito</h4>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
     </div>
     <div class="modal-body">
+        <div class="text-center mb-4">
+            <img class="rounded-circle mb-3 img-fluid border border-3 border-dark-purple" src="<?php echo $foto_path; ?>" alt="Foto de <?php echo $perro->getNombre(); ?>" style="width: 150px; height: 150px; object-fit: cover;">
+        </div>
         <table class="table table-striped table-hover">
             <tbody>
-            	<tr class="table-row-hover">
-            		
-                    <th class="py-2 px-4 font-weight-semibold" style='color: #4b0082;'>Foto</th>
-                    <td class="py-2 px-4"><img class="rounded-circle mb-2 img-fluid" src="<?php echo $foto_path; ?>" alt="Foto de <?php echo $perro->getNombre(); ?>" style="width: 120px; height: 120px; object-fit: cover;">
-</td>
-                </tr>
-                <tr class="table-row-hover">
-                    <th class="py-2 px-4 font-weight-semibold" style='color: #4b0082;'>ID</th>
-                    <td class="py-2 px-4"><?php echo $perro -> getId() ?></td>
-                </tr>
                 <tr class="table-row-hover">
                     <th class="py-2 px-4 font-weight-semibold" style='color: #4b0082;'>Nombre</th>
-                    <td class="py-2 px-4"><?php echo $perro-> getNombre() ?></td>
-                </tr>
-                <tr class="table-row-hover">
-                    <th class="py-2 px-4 font-weight-semibold" style='color: #4b0082;'>Observaciones</th>
-                    <td class="py-2 px-4"><?php echo $perro -> getObservaciones()?></td>
+                    <td class="py-2 px-4"><?php echo $perro->getNombre() ?></td>
                 </tr>
                 <tr class="table-row-hover">
                     <th class="py-2 px-4 font-weight-semibold" style='color: #4b0082;'>Raza</th>
-                    <td class="py-2 px-4"><?php echo $raza -> getNombre()?></td>
+                    <td class="py-2 px-4"><?php echo $raza->getNombre() ?></td>
                 </tr>
                 <tr class="table-row-hover">
-                    <th class="py-2 px-4 font-weight-semibold" style='color: #4b0082;'>Propietario</th>
-                    <td class="py-2 px-4">
-                    <span class="text-purple-700">Nombre:<?php echo $propietario -> getNombre() . " " . $propietario -> getApellido() ?></span></br>
-                    <span class="text-purple-600">Contacto: <?php echo $propietario -> getTelefono(); ?></span>
-                    </td>
+                    <th class="py-2 px-4 font-weight-semibold" style='color: #4b0082;'>Observaciones</th>
+                    <td class="py-2 px-4"><?php echo !empty($perro->getObservaciones()) ? $perro->getObservaciones() : 'Sin observaciones especiales'; ?></td>
                 </tr>
             </tbody>
         </table>

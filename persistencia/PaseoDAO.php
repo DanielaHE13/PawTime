@@ -201,7 +201,7 @@ class PaseoDAO{
             FROM paseo
             WHERE Paseador_idPaseador = '$idPaseador'
               AND fecha = '$fecha'
-              AND Estado_idEstado = 1
+              AND Estado_idEstado IN (2, 5) -- Estados: En curso (2) y Aceptado (5)
               AND (
                     (hora_inicio < '$horaFin' AND hora_fin > '$horaInicio')
                   )";

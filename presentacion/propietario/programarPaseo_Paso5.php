@@ -40,9 +40,12 @@ $horaInicio = DateTime::createFromFormat('H:i', $hora);
 $horaFin = clone $horaInicio;
 $horaFin->add(new DateInterval('PT' . $duracion . 'M'));
 
-// Calcular precio total
-$precioPorMascota = $paseadorSeleccionado->getTarifa();
-$precioTotal = $precioPorMascota * count($mascotasSeleccionadas);
+// Calcular precio total usando la función centralizada
+$precioTotal = ServicioPaseo::calcularPrecioTotal(
+    $paseadorSeleccionado->getTarifa(), 
+    $duracion, 
+    count($mascotasSeleccionadas)
+);
 
 // Procesar confirmación del paseo
 if ($_POST && isset($_POST["confirmar_paseo"])) {

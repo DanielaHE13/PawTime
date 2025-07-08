@@ -1,4 +1,4 @@
- <?php
+<?php
 $id = $_SESSION["id"];
 $paseador = new Paseador($id);
 $paseador->consultar();
@@ -48,9 +48,20 @@ $paseador->consultar();
     </div>
 
   </div>
-      <div class="col-12 col-md-6 d-flex flex-wrap justify-content-center justify-content-md-end gap-3">
-        <div class="dropdown">
-      <button class="btn fw-bold px-4 py-2 dropdown-toggle"
+
+  <!-- Sección de botones -->
+  <div class="col-12 col-md-6 d-flex flex-wrap justify-content-center justify-content-md-end align-items-center gap-2">
+    
+    <!-- Botón de Inicio -->
+    <a href="?pid=<?php echo base64_encode('presentacion/paseador/sesionPaseador.php') ?>"
+      class="btn fw-bold px-3 py-2"
+      style="color: #4b0082; border-radius: 12px;">
+      <i class="fa-solid fa-home fa-lg"></i>
+    </a>
+
+    <!-- Dropdown Gestionar paseos -->
+    <div class="dropdown">
+      <button class="btn fw-bold px-3 py-2 dropdown-toggle"
               type="button"
               id="dropdownSolicitudes"
               data-bs-toggle="dropdown"
@@ -80,38 +91,36 @@ $paseador->consultar();
       </ul>
     </div>
 
+    <!-- Mi Perfil -->
     <a href="?pid=<?php echo base64_encode('presentacion/paseador/editarPerfil.php') ?>"
-      class="btn fw-bold px-4 py-2"
+      class="btn fw-bold px-3 py-2"
       style="color: #4b0082; border-radius: 12px;">
       <i class="fa-solid fa-user-edit me-2 fa-lg"></i>Mi Perfil
     </a>
 
+    <!-- Historial de paseos -->
     <a href="?pid=<?php echo base64_encode('presentacion/paseador/consultarPaseo.php') ?>"
-      class="btn fw-bold px-4 py-2"
+      class="btn fw-bold px-3 py-2"
       style="color: #4b0082; border-radius: 12px;">
-      <i class="fa-solid fa-history me-2 fa-lg"></i>Historial de paseos
+      <i class="fa-solid fa-history me-2 fa-lg"></i>Historial
     </a>
     
-    <a href="?pid=<?php echo base64_encode('presentacion/estadisticas/estadisticasGeneral.php') ?>"
-      class="btn fw-bold px-4 py-2"
-      style="color: #4b0082; border-radius: 12px;">
-      <i class="fa-solid fa-chart-line me-2 fa-lg"></i>Estadisticas general
-    </a>
-    
+    <!-- Mis estadísticas -->
     <a href="?pid=<?php echo base64_encode('presentacion/estadisticas/estadisticasPropias.php') ?>"
-      class="btn fw-bold px-4 py-2"
+      class="btn fw-bold px-3 py-2"
       style="color: #4b0082; border-radius: 12px;">
-      <i class="fa-solid fa-chart-line me-2 fa-lg"></i>Mis estadisticas
+      <i class="fa-solid fa-chart-bar me-2 fa-lg"></i>Mis Stats
     </a>
 
-    <!-- Botón que abre el modal de cerrar sesión -->
-    <a href="#" class="btn fw-bold px-4 py-2"
+    <!-- Botón Salir -->
+    <a href="#" class="btn fw-bold px-3 py-2"
       style="color: #4b0082; border-radius: 12px;"
       data-bs-toggle="modal" data-bs-target="#modalCerrarSesion">
       <i class="fa-solid fa-right-from-bracket me-2 fa-lg"></i>Salir
     </a>
+  </div>
 
-    <!-- Modal de Confirmación de Cierre de Sesión -->
+  <!-- Modal de Confirmación de Cierre de Sesión -->
     <div class="modal fade" id="modalCerrarSesion" tabindex="-1" aria-labelledby="modalCerrarSesionLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border-radius: 20px; background-color: #f8f0fc;">

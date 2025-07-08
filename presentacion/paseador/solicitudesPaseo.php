@@ -4,14 +4,43 @@ if($_SESSION["rol"] != "paseador"){
 }
 $id=$_SESSION['id'];
 $mensaje = false;
+$debugInfo = "";
 if(isset($_GET["idPaseo"])){
     $idPaseo= $_GET["idPaseo"];
     if(isset($_GET["estado"])){
         $estado= $_GET["estado"];
     }
     $estadoPaseo = new Paseo($idPaseo);
-    $aceptados = $estadoPaseo->contarPaseosAceptadosSolapados($_SESSION["id"], '2025-07-08', '15:00:00', '16:00:00');
-    if($aceptados == 2){
+    $estadoPaseo->consultar(); // Obtener los datos del paseo
+    
+    // DEBUG: Mostrar información del paseo
+    require_once(__DIR__ . "/../../logica/ServicioPaseo.php");
+    $paseosDebug = ServicioPaseo::debugContarPaseos(
+        $_SESSION["id"], 
+        $estadoPaseo->getFecha(), 
+        $estadoPaseo->getHora_inicio(), 
+        $estadoPaseo->getHora_fin()
+    );
+    
+    $debugInfo = "<div class='alert alert-info'><strong>DEBUG:</strong><br>";
+    $debugInfo .= "Paseo a aceptar: ID " . $idPaseo . ", Fecha: " . $estadoPaseo->getFecha() . ", Hora: " . $estadoPaseo->getHora_inicio() . " - " . $estadoPaseo->getHora_fin() . "<br>";
+    $debugInfo .= "Paseos existentes del paseador " . $_SESSION["id"] . ":<br>";
+    foreach ($paseosDebug as $paseo) {
+        $debugInfo .= "- ID: " . $paseo['id'] . ", Estado: " . $paseo['estado_nombre'] . " (" . $paseo['estado_id'] . "), Hora: " . $paseo['hora_inicio'] . " - " . $paseo['hora_fin'] . "<br>";
+    }
+    $debugInfo .= "</div>";
+    
+    // Verificar si ya hay 2 paseos aceptados en el mismo horario
+    $aceptados = $estadoPaseo->contarPaseosAceptadosSolapados(
+        $_SESSION["id"], 
+        $estadoPaseo->getFecha(), 
+        $estadoPaseo->getHora_inicio(), 
+        $estadoPaseo->getHora_fin()
+    );
+    
+    $debugInfo .= "<div class='alert alert-warning'>Paseos solapados encontrados: " . $aceptados . "</div>";
+    
+    if($aceptados >= 2){
         $mensaje = true;
     }else{
         $estadoPaseo ->actualizarEstadoPaseo($estado);  
@@ -27,14 +56,21 @@ include ('presentacion/menuPaseador.php');
 <div class="container mt-4">
     <div class="row g-4">
 <?php 
+// Mostrar información de debug si está disponible
+if (!empty($debugInfo)) {
+    echo $debugInfo;
+}
+
 $paseo =  new Paseo();
 $paseos = $paseo ->consultarPorPaseadorProgramados($_SESSION["id"]);
 if($mensaje){
-    echo "<div class='alert alert-warning' role='alert' style='color: #4b0082; font-weight: bold;'>
-🚫 Lo sentimos, no puedes aceptar este paseo.<br>
-Ya tienes programados <strong>2 paseos aceptados</strong> en el mismo horario para esta fecha. Por la seguridad y bienestar de los perritos, no es posible gestionar más paseos simultáneos. 🐶💜
-</div>";
-    
+    echo "<div class='alert alert-danger' role='alert' style='color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; font-weight: bold;'>
+        <i class='fa-solid fa-exclamation-triangle me-2'></i>
+        🚫 <strong>No puedes aceptar este paseo</strong><br>
+        Ya tienes programados <strong>2 paseos simultáneos</strong> para el mismo horario en esta fecha. 
+        <br>Por la seguridad y bienestar de los perritos, el límite máximo es de <strong>2 perros por paseo</strong>. 🐶💜
+        <br><em>Intenta programar el paseo en un horario diferente.</em>
+    </div>";
 }
 if(empty($paseos)){
     echo '

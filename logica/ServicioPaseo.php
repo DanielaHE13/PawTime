@@ -32,7 +32,11 @@ class ServicioPaseo {
             // Obtener paseador para calcular precio
             $paseador = new Paseador($idPaseador);
             $paseador->consultar();
-            $precioPorMascota = $paseador->getTarifa();
+            $tarifaPorHora = $paseador->getTarifa();
+            
+            // Calcular precio usando la función centralizada
+            $precioTotal = self::calcularPrecioTotal($tarifaPorHora, $datosPaseo['duracion'], count($mascotasIds));
+            $precioPorMascota = $precioTotal / count($mascotasIds);
             
             // Calcular horas de inicio y fin
             $horaInicio = DateTime::createFromFormat('H:i', $datosPaseo['hora']);
@@ -53,7 +57,7 @@ class ServicioPaseo {
                 'exitoso' => true,
                 'mensaje' => '¡Paseo programado exitosamente! Recibirás una confirmación y el paseador se comunicará contigo.',
                 'paseos' => $paseosRegistrados,
-                'precioTotal' => $precioPorMascota * count($mascotasIds)
+                'precioTotal' => $precioTotal
             ];
             
         } catch (Exception $e) {
@@ -112,6 +116,14 @@ class ServicioPaseo {
             }
         }
         
+        // Validar límite de paseos simultáneos para el paseador
+        if (!empty($datosPaseo['fecha']) && !empty($datosPaseo['hora']) && !empty($datosPaseo['duracion']) && !empty($idPaseador)) {
+            $conflictoPaseador = self::verificarLimitePaseador($idPaseador, $datosPaseo['fecha'], $datosPaseo['hora'], $datosPaseo['duracion']);
+            if (!empty($conflictoPaseador)) {
+                $errores[] = $conflictoPaseador;
+            }
+        }
+        
         return $errores;
     }
     
@@ -161,14 +173,7 @@ class ServicioPaseo {
         unset($session["paseo_observaciones"]);
     }
 
-    /**
-     * Verifica conflictos de horarios para las mascotas seleccionadas
-     * @param string $fecha Fecha del paseo
-     * @param string $hora Hora del paseo
-     * @param int $duracion Duración en minutos
-     * @param array $mascotasIds Array de IDs de mascotas
-     * @return array Array de errores de conflictos
-     */
+
     private static function verificarConflictosHorarios($fecha, $hora, $duracion, $mascotasIds) {
         $errores = [];
         
@@ -194,8 +199,7 @@ class ServicioPaseo {
                         JOIN estado e ON p.Estado_idEstado = e.idEstado
                         WHERE p.Perro_idPerro = $idMascota 
                         AND p.fecha = '$fecha' 
-                        AND e.nombre != 'Cancelado'
-                        AND e.nombre != 'Finalizado'";
+                        AND e.nombre IN ('Aceptado', 'En curso')";
                         
             $conexion->ejecutar($consulta);
             
@@ -232,5 +236,200 @@ class ServicioPaseo {
         // - El fin del primero es después del inicio del segundo
         return ($inicio1 < $fin2) && ($fin1 > $inicio2);
     }
+    
+    /**
+     * Verifica si un paseador ya tiene el límite máximo de paseos simultáneos (2)
+     * @param int $idPaseador ID del paseador
+     * @param string $fecha Fecha del nuevo paseo (Y-m-d)
+     * @param string $hora Hora de inicio del nuevo paseo (H:i)
+     * @param int $duracion Duración en minutos
+     * @return string Mensaje de error si hay conflicto, string vacío si no hay problema
+     */
+    private static function verificarLimitePaseador($idPaseador, $fecha, $hora, $duracion) {
+        // Calcular hora de inicio y fin del nuevo paseo
+        $horaInicio = DateTime::createFromFormat('H:i', $hora);
+        $horaFin = clone $horaInicio;
+        $horaFin->add(new DateInterval('PT' . $duracion . 'M'));
+        
+        $horaInicioStr = $horaInicio->format('H:i:s');
+        $horaFinStr = $horaFin->format('H:i:s');
+        
+        // Usar la función existente para contar paseos solapados
+        $paseo = new Paseo();
+        $paseosSimultaneos = $paseo->contarPaseosAceptadosSolapados($idPaseador, $fecha, $horaInicioStr, $horaFinStr);
+        
+        if ($paseosSimultaneos >= 2) {
+            return "El paseador seleccionado ya tiene programados 2 paseos simultáneos para ese horario. Por la seguridad y bienestar de los perritos, cada paseador puede manejar máximo 2 perros al mismo tiempo.";
+        }
+        
+        return "";
+    }
+    
+    /**
+     * Obtiene los paseadores disponibles para una fecha y horario específicos
+     * @param string $fecha Fecha del paseo (Y-m-d)
+     * @param string $hora Hora de inicio (H:i)
+     * @param int $duracion Duración en minutos
+     * @return array Array de paseadores disponibles
+     */
+    public static function obtenerPaseadoresDisponibles($fecha, $hora, $duracion) {
+        // Obtener todos los paseadores activos
+        $paseador = new Paseador();
+        $todosPaseadores = $paseador->consultarTodos();
+        
+        // Filtrar solo paseadores activos
+        $paseadoresActivos = array_filter($todosPaseadores, function($p) {
+            return $p->getEstado() == 1;
+        });
+        
+        // Filtrar paseadores que no tengan conflictos de horario
+        $paseadoresDisponibles = array();
+        
+        foreach ($paseadoresActivos as $paseadorItem) {
+            $conflicto = self::verificarLimitePaseador($paseadorItem->getId(), $fecha, $hora, $duracion);
+            if (empty($conflicto)) {
+                $paseadoresDisponibles[] = $paseadorItem;
+            }
+        }
+        
+        return $paseadoresDisponibles;
+    }
+
+    /**
+     * Validación completa del sistema de límite de paseadores
+     * Método de utilidad para verificar que todas las validaciones funcionen correctamente
+     */
+    public static function validarSistemaLimitePaseadores() {
+        $resultados = [];
+        
+        // Obtener todos los paseadores activos
+        $paseador = new Paseador();
+        $paseadores = $paseador->consultarTodos();
+        
+        foreach ($paseadores as $p) {
+            if ($p->getEstado() == 1) { // Solo paseadores activos
+                // Verificar cuántos paseos tiene programados para hoy
+                $paseo = new Paseo();
+                $fechaHoy = date('Y-m-d');
+                $horaActual = date('H:i:s');
+                
+                $paseosSimultaneos = $paseo->contarPaseosAceptadosSolapados(
+                    $p->getId(), 
+                    $fechaHoy, 
+                    $horaActual, 
+                    '23:59:59'
+                );
+                
+                $resultados[] = [
+                    'paseador' => $p->getNombre() . ' ' . $p->getApellido(),
+                    'id' => $p->getId(),
+                    'paseos_activos' => $paseosSimultaneos,
+                    'disponible' => $paseosSimultaneos < 2
+                ];
+            }
+        }
+        
+        return $resultados;
+    }
+
+    /**
+     * Función de debug para verificar qué paseos está contando
+     * REMOVER DESPUÉS DE SOLUCIONAR EL PROBLEMA
+     */
+    public static function debugContarPaseos($idPaseador, $fecha, $horaInicio, $horaFin) {
+        $conexion = new Conexion();
+        $conexion->abrir();
+        
+        $consulta = "SELECT p.idPaseo, p.fecha, p.hora_inicio, p.hora_fin, e.idEstado, e.nombre as estado
+                    FROM paseo p 
+                    JOIN estado e ON p.Estado_idEstado = e.idEstado
+                    WHERE p.Paseador_idPaseador = '$idPaseador'
+                      AND p.fecha = '$fecha'";
+                      
+        $conexion->ejecutar($consulta);
+        
+        $paseos = [];
+        while (($registro = $conexion->registro()) != null) {
+            $paseos[] = [
+                'id' => $registro[0],
+                'fecha' => $registro[1],
+                'hora_inicio' => $registro[2], 
+                'hora_fin' => $registro[3],
+                'estado_id' => $registro[4],
+                'estado_nombre' => $registro[5]
+            ];
+        }
+        
+        $conexion->cerrar();
+        return $paseos;
+    }
+
+    /**
+     * Calcula el precio total de un paseo
+     * Fórmula: Tarifa por hora × Duración en horas × Cantidad de perros
+     * @param float $tarifaPorHora Tarifa del paseador por hora
+     * @param int $duracionMinutos Duración del paseo en minutos
+     * @param int $cantidadPerros Cantidad de perros en el paseo
+     * @return float Precio total del paseo
+     */
+    public static function calcularPrecioTotal($tarifaPorHora, $duracionMinutos, $cantidadPerros) {
+        $duracionEnHoras = $duracionMinutos / 60;
+        $precioPorPerro = $tarifaPorHora * $duracionEnHoras;
+        $precioTotal = $precioPorPerro * $cantidadPerros;
+        
+        return round($precioTotal, 2); // Redondear a 2 decimales
+    }
+    
+    /**
+     * Función de utilidad para validar cálculos de precio
+     * @param int $idPaseador ID del paseador
+     * @param int $duracionMinutos Duración en minutos
+     * @param int $cantidadPerros Cantidad de perros
+     * @return array Información detallada del cálculo
+     */
+    public static function validarCalculoPrecio($idPaseador, $duracionMinutos, $cantidadPerros) {
+        $paseador = new Paseador($idPaseador);
+        $paseador->consultar();
+        
+        $tarifaPorHora = $paseador->getTarifa();
+        $duracionEnHoras = $duracionMinutos / 60;
+        $precioPorPerro = $tarifaPorHora * $duracionEnHoras;
+        $precioTotal = $precioPorPerro * $cantidadPerros;
+        
+        return [
+            'paseador' => $paseador->getNombre() . ' ' . $paseador->getApellido(),
+            'tarifa_por_hora' => $tarifaPorHora,
+            'duracion_minutos' => $duracionMinutos,
+            'duracion_horas' => $duracionEnHoras,
+            'cantidad_perros' => $cantidadPerros,
+            'precio_por_perro' => $precioPorPerro,
+            'precio_total' => $precioTotal,
+            'formula' => "$tarifaPorHora × $duracionEnHoras × $cantidadPerros = $precioTotal"
+        ];
+    }
 }
-?>
+
+/* ✅ **CÁLCULO CORREGIDO DEL PRECIO TOTAL
+
+### Fórmula implementada:
+**Precio Total = Tarifa por hora × Duración en horas × Cantidad de perros**
+
+### Ejemplo práctico:
+- **Paseador**: Juan Pérez, Tarifa: $20,000/hora
+- **Duración**: 90 minutos (1.5 horas) 
+- **Perros**: 2 perros (Max y Luna)
+
+**Cálculo:**
+- Duración en horas: 90 ÷ 60 = 1.5 horas
+- Precio total: $20,000 × 1.5 × 2 = $60,000
+
+### Lugares donde se aplica:
+1. ✅ `ServicioPaseo::programarPaseo()` - Al crear el paseo
+2. ✅ `programarPaseo_Paso5.php` - En el resumen antes de confirmar
+3. ✅ `ServicioPaseo::calcularPrecioTotal()` - Función centralizada
+4. ✅ `factura.php` - Usa el precio guardado en BD (ya corregido)
+
+### Validación:
+Usa `ServicioPaseo::validarCalculoPrecio($idPaseador, $duracionMinutos, $cantidadPerros)` 
+para verificar cálculos específicos.
+*/

@@ -16,6 +16,7 @@ if (!isset($_SESSION["paseo_mascotas"]) || empty($_SESSION["paseo_mascotas"]) ||
 require_once(__DIR__ . "/../../logica/Perro.php");
 require_once(__DIR__ . "/../../logica/Paseador.php");
 require_once(__DIR__ . "/../../logica/Paseo.php");
+require_once(__DIR__ . "/../../logica/ServicioPaseo.php");
 
 $mensaje = "";
 $tipoMensaje = "";
@@ -29,14 +30,12 @@ foreach ($_SESSION["paseo_mascotas"] as $idPerro) {
     $mascotasSeleccionadas[] = $perro;
 }
 
-// Obtener todos los paseadores activos
-$paseador = new Paseador();
-$todosPaseadores = $paseador->consultarTodos();
-
-// Filtrar solo paseadores activos (estado = 1)
-$paseadoresActivos = array_filter($todosPaseadores, function($p) {
-    return $p->getEstado() == 1;
-});
+// Obtener paseadores disponibles para la fecha y horario seleccionados
+$paseadoresActivos = ServicioPaseo::obtenerPaseadoresDisponibles(
+    $_SESSION["paseo_fecha"], 
+    $_SESSION["paseo_hora"], 
+    $_SESSION["paseo_duracion"]
+);
 
 // Filtros aplicados
 $filtroTarifa = $_GET['tarifa'] ?? 'todos';
@@ -231,12 +230,29 @@ include("presentacion/menuPropietario.php");
                                 <!-- Sin paseadores disponibles -->
                                 <div class="text-center py-5">
                                     <div>
-                                        <i class="fas fa-search fa-4x text-muted mb-4"></i>
+                                        <i class="fas fa-calendar-times fa-4x text-muted mb-4"></i>
                                         <h4 class="text-muted mb-3">No hay paseadores disponibles</h4>
-                                        <p class="text-muted mb-4">Intenta ajustar los filtros o seleccionar otra fecha</p>
-                                        <button type="button" class="btn btn-outline-primary" onclick="resetFiltros()">
-                                            <i class="fas fa-redo me-2"></i>Limpiar Filtros
-                                        </button>
+                                        <p class="text-muted mb-4">
+                                            No encontramos paseadores disponibles para el 
+                                            <strong><?php echo date('d/m/Y', strtotime($_SESSION["paseo_fecha"])); ?></strong> 
+                                            de <strong><?php echo date('g:i A', strtotime($_SESSION["paseo_hora"])); ?></strong> 
+                                            a <strong><?php 
+                                                $horaFin = DateTime::createFromFormat('H:i', $_SESSION["paseo_hora"]);
+                                                $horaFin->add(new DateInterval('PT' . $_SESSION["paseo_duracion"] . 'M'));
+                                                echo $horaFin->format('g:i A'); 
+                                            ?></strong><br>
+                                            <small>Los paseadores pueden estar ocupados (máximo 2 perros simultáneos) o inactivos</small>
+                                        </p>
+                                        <div class="d-flex gap-3 justify-content-center">
+                                            <button type="button" class="btn btn-outline-primary" onclick="resetFiltros()">
+                                                <i class="fas fa-redo me-2"></i>Limpiar Filtros
+                                            </button>
+                                            <form method="post" class="d-inline">
+                                                <button type="submit" name="paso_anterior" class="btn btn-outline-secondary">
+                                                    <i class="fas fa-arrow-left me-2"></i>Cambiar Horario
+                                                </button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             <?php else: ?>
@@ -247,14 +263,36 @@ include("presentacion/menuPropietario.php");
                                         <i class="fas fa-info-circle fa-2x me-3" style="color: #4b0082;"></i>
                                         <div>
                                             <h6 class="fw-bold mb-1" style="color: #4b0082;">Paseadores disponibles</h6>
-                                            <small style="color: #6a0dad;">Encontramos <?php echo count($paseadoresFiltrados); ?> paseador(es)  disponibles para tu fecha y hora</small>
+                                            <small style="color: #6a0dad;">
+                                                Encontramos <?php echo count($paseadoresFiltrados); ?> paseador(es) disponibles para el 
+                                                <strong><?php echo date('d/m/Y', strtotime($_SESSION["paseo_fecha"])); ?></strong> 
+                                                de <strong><?php echo date('g:i A', strtotime($_SESSION["paseo_hora"])); ?></strong> 
+                                                a <strong><?php 
+                                                    $horaFin = DateTime::createFromFormat('H:i', $_SESSION["paseo_hora"]);
+                                                    $horaFin->add(new DateInterval('PT' . $_SESSION["paseo_duracion"] . 'M'));
+                                                    echo $horaFin->format('g:i A'); 
+                                                ?></strong>
+                                                <br><em>Solo se muestran paseadores activos y sin conflictos de horario (máximo 2 perros por paseador)</em>
+                                            </small>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Lista de paseadores -->
                                 <div class="row">
-                                    <?php foreach ($paseadoresFiltrados as $index => $paseadorItem): ?>
+                                    <?php foreach ($paseadoresFiltrados as $index => $paseadorItem): 
+                                        // Obtener número de paseos simultáneos que tiene este paseador
+                                        $paseoTemp = new Paseo();
+                                        $horaInicio = DateTime::createFromFormat('H:i', $_SESSION["paseo_hora"]);
+                                        $horaFin = clone $horaInicio;
+                                        $horaFin->add(new DateInterval('PT' . $_SESSION["paseo_duracion"] . 'M'));
+                                        $paseosSimultaneos = $paseoTemp->contarPaseosAceptadosSolapados(
+                                            $paseadorItem->getId(), 
+                                            $_SESSION["paseo_fecha"], 
+                                            $horaInicio->format('H:i:s'), 
+                                            $horaFin->format('H:i:s')
+                                        );
+                                    ?>
                                         <div class="col-lg-6 mb-4">
                                             <div class="paseador-card">
                                                 <input type="radio" class="paseador-radio d-none" 
@@ -270,6 +308,13 @@ include("presentacion/menuPropietario.php");
                                                                      style="width: 80px; height: 80px; object-fit: cover; border: 3px solid #E3CFF5;">
                                                                 <div class="check-overlay-paseador">
                                                                     <i class="fas fa-check"></i>
+                                                                </div>
+                                                                <!-- Indicador de disponibilidad -->
+                                                                <div class="disponibilidad-badge">
+                                                                    <small class="badge bg-success">
+                                                                        <i class="fas fa-dog me-1"></i>
+                                                                        <?php echo (2 - $paseosSimultaneos); ?>/2 disponible
+                                                                    </small>
                                                                 </div>
                                                             </div>
                                                             <h5 class="fw-bold mb-3" style="color: #4b0082;">
@@ -371,6 +416,20 @@ include("presentacion/menuPropietario.php");
             opacity: 0;
             transform: scale(0);
             transition: all 0.3s ease;
+        }
+        
+        .disponibilidad-badge {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+        
+        .disponibilidad-badge .badge {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 10px;
         }
         
         .paseador-radio:checked + .paseador-label .check-overlay-paseador {
