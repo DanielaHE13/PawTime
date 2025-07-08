@@ -178,8 +178,7 @@ if (isset($_GET["sesion"])) {
 $error = false;
 $errorRegistro = false;
 $exitoRegistro = false;
-
-// Lógica para autenticación
+$mensaje = false;
 if (isset($_POST["autenticar"])) {
   $correo = $_POST["correo"];
   $clave = $_POST["clave"];
@@ -197,9 +196,14 @@ if (isset($_POST["autenticar"])) {
     } else {
       $paseador = new Paseador("", "", "", "", $correo, $clave);
       if ($paseador->autenticar()) {
-        $_SESSION["id"] = $paseador->getId();
-        $_SESSION["rol"] = "paseador";
-        header("Location: ?pid=" . base64_encode("presentacion/paseador/sesionPaseador.php"));
+          $paseador ->consultarEstado($paseador->getId());
+          if($paseador->getEstado()!="0"){
+            $_SESSION["id"] = $paseador->getId();
+            $_SESSION["rol"] = "paseador";
+            header("Location: ?pid=" . base64_encode("presentacion/paseador/sesionPaseador.php"));
+          }else{
+              $mensaje = true;
+          }
       } else {
         $error = true;
       }
@@ -307,6 +311,11 @@ if (isset($_POST["registrar"])) {
         <?php
         if ($error) {
           echo "<div class='alert alert-danger mt-3' role='alert'>Credenciales incorrectas</div>";
+        }else if($mensaje){
+            echo "<div class='alert alert-danger' role='alert' style='color: #721c24; font-weight: bold;'>
+            🚫 Tu cuenta se encuentra <strong>inhabilitada</strong> actualmente.<br>
+            Por favor, comunícate con el administrador del sistema para más información o para restablecer tu acceso. 🙁🔒
+            </div>";            
         }
         ?>
       </div>

@@ -74,7 +74,7 @@ foreach ($paseos as $p){
                     </p>
         
                     <div class="d-flex justify-content-around align-items-center">
-                        <a href="modalPaseo.php?idPaseo=<?php echo $p->getId(); ?>&idPaseador=<?php echo $id; ?>" 
+                        <a href="modalPaseo2.php?idPaseo=<?php echo $p->getId(); ?>&idPaseador=<?php echo $id; ?>" 
                            class="btn btn-outline-purple abrir-modal" 
                            data-id="<?php echo $p->getId(); ?>" 
                            title="Ver más del paseo">
@@ -87,11 +87,11 @@ foreach ($paseos as $p){
                            title="Ver info del perrito">
                            <i class="fa-solid fa-dog"></i>
                         </a>
-                        <a href="modalGenerarQR.php?idPaseo=<?php echo $p->getId(); ?>" 
-                           class="btn btn-danger abrir-modal" 
-                           data-id="<?php echo $p->getId(); ?>" 
-                           title="Abrir QR">
-                           <i class="fa-solid fa-qrcode"></i>
+                        <a href="factura.php?idPaseo=<?php echo $p->getId(); ?>" 
+                           target="_blank"
+                           class="btn btn-danger"
+                           title="Generar PDF">
+                           <i class="fa-solid fa-file-pdf"></i>
                         </a>
                     </div>
                 </div>

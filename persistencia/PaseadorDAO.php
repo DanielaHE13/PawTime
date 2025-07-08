@@ -40,6 +40,12 @@ class PaseadorDAO {
                 WHERE idPaseador = " . $this->id;
     }
     
+    public function consultarEstado($id){
+        return "SELECT estado
+                FROM Paseador
+                WHERE idPaseador = " . $id;
+    }
+    
     public function editarPerfil(){
         return "UPDATE Paseador SET
                     nombre = '" . $this->nombre . "',

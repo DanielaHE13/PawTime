@@ -6,6 +6,9 @@ if ($_SESSION["rol"] != "paseador") {
 $id = $_SESSION["id"];
 $paseador = new Paseador($id);
 $paseador->consultar();
+if (is_null($paseador->getFoto()) || trim($paseador->getFoto()) === "") {
+    header("Location: ?pid=" . base64_encode("presentacion/paseador/editarFotoObligatorio.php"));
+}
 include("presentacion/encabezado.php");
 include("presentacion/menuPaseador.php");
 ?>

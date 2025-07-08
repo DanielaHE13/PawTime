@@ -55,10 +55,26 @@ class PerroDAO {
     }
     
     public function perritosPorPaseo($fecha, $hora_inicio, $paseador) {
-        return "select e.nombre, e.foto, r.idRaza, r.nombre, o.idPropietario, o.nombre, o.apellido
-                from Perro e join Paseo p on (p.Perro_idPerro = e.idPerro)
-			                 join propietario o on (e.Propietario_idPropietario = o.idPropietario)
-                             join raza r on (e.Raza_idRaza = r.idRaza)
-                where p.fecha = '".$fecha."' and p.hora_inicio = '".$hora_inicio."' and p.Paseador_idPaseador = '".$paseador."'";
+        return "SELECT e.nombre, e.foto, r.idRaza, r.nombre, o.idPropietario, o.nombre, o.apellido
+            FROM paseo p
+            JOIN perro e ON p.Perro_idPerro = e.idPerro
+            JOIN propietario o ON e.Propietario_idPropietario = o.idPropietario
+            JOIN raza r ON e.Raza_idRaza = r.idRaza
+            WHERE p.fecha = '$fecha'
+              AND p.hora_inicio = '$hora_inicio'
+              AND p.Paseador_idPaseador = '$paseador'";
+    }
+    
+    public function perritosPorPaseoCancelado($fecha, $hora_inicio, $paseador,$estado) {
+        return "SELECT e.nombre, e.foto, r.idRaza, r.nombre, o.idPropietario, o.nombre, o.apellido
+            FROM paseo p
+            JOIN perro e ON p.Perro_idPerro = e.idPerro
+            JOIN propietario o ON e.Propietario_idPropietario = o.idPropietario
+            JOIN raza r ON e.Raza_idRaza = r.idRaza
+            JOIN estado s on p.Estado_idEstado = s.idEstado
+            WHERE p.fecha = '$fecha'
+              AND p.hora_inicio = '$hora_inicio'
+              AND p.Paseador_idPaseador = '$paseador'
+              AND p.Estado_idEstado != '$estado'";
     }
 }

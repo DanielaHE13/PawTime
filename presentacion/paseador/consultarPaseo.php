@@ -106,7 +106,7 @@ $(document).ready(function(){
 	let tablaOriginal = $("#resultados").html();
 	$("#filtro").keyup(function(){
 		if($("#filtro").val().length > 2){
-			var ruta = "buscarPaseoPaseadorAjax.php?filtro=" + $("#filtro").val().replaceAll(" ", "%20");
+			var ruta = "indexAjax.php?pid=<?php echo base64_encode('presentacion/paseador/buscarPaseoPaseadorAjax.php'); ?>&filtro=" + $("#filtro").val().replaceAll(" ", "%20");
 			console.log(ruta);
 			$("#resultados").load(ruta);
 		}else{

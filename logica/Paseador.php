@@ -77,6 +77,18 @@ class Paseador extends Persona {
         $conexion->cerrar();
         return $paseadores;
     }
+    
+    public function consultarEstado($id){
+        $conexion = new Conexion();
+        $paseadorDAO = new PaseadorDAO();
+        $conexion->abrir();
+        $conexion->ejecutar($paseadorDAO->consultarEstado($id));
+        $datos = $conexion->registro();
+        
+        $this->estado = $datos[0];
+        
+        $conexion->cerrar();
+    }
       
     public function editarPerfil(){
         $conexion = new Conexion();

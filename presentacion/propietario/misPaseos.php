@@ -240,6 +240,16 @@ $paseos = Paseo::obtenerPaseosPorPropietario($id_propietario);
                                                 </button>
                                             <?php endif; ?>
                                             
+                                             <?php if ($estado === 'Completado'): ?>
+                                                <a href="factura.php?idPaseo=<?php echo $paseo->getId(); ?>" 
+                                                   target="_blank"
+                                                   class="btn btn-danger mt-2 fw-bold"
+                                                   style="border-radius: 8px; font-size: 0.8em;"
+                                                   title="Generar PDF">
+                                                   <i class="fa-solid fa-file-pdf me-1"></i>Factura
+                                                </a>
+                                            <?php endif; ?>
+                                            
                                             <?php if (!empty($paseo->getObservaciones())): ?>
                                                 <p class="text-muted mt-2 mb-0" style="font-size: 0.85em;">
                                                     <i class="fa-solid fa-note-sticky me-1"></i>

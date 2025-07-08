@@ -3,13 +3,19 @@ if($_SESSION["rol"] != "paseador"){
     header("Location: ?pid=" . base64_encode("presentacion/noAutorizado.php"));
 }
 $id=$_SESSION['id'];
+$mensaje = false;
 if(isset($_GET["idPaseo"])){
     $idPaseo= $_GET["idPaseo"];
     if(isset($_GET["estado"])){
         $estado= $_GET["estado"];
     }
     $estadoPaseo = new Paseo($idPaseo);
-    $estadoPaseo ->actualizarEstadoPaseo($estado);   
+    $aceptados = $estadoPaseo->contarPaseosAceptadosSolapados($_SESSION["id"], '2025-07-08', '15:00:00', '16:00:00');
+    if($aceptados == 2){
+        $mensaje = true;
+    }else{
+        $estadoPaseo ->actualizarEstadoPaseo($estado);  
+    }
 }
 ?>
 <body style="background: linear-gradient(to bottom, #E3CFF5, #CFA8F5); min-height: 100vh; font-family: 'Mukta', sans-serif;">
@@ -23,6 +29,13 @@ include ('presentacion/menuPaseador.php');
 <?php 
 $paseo =  new Paseo();
 $paseos = $paseo ->consultarPorPaseadorProgramados($_SESSION["id"]);
+if($mensaje){
+    echo "<div class='alert alert-warning' role='alert' style='color: #4b0082; font-weight: bold;'>
+🚫 Lo sentimos, no puedes aceptar este paseo.<br>
+Ya tienes programados <strong>2 paseos aceptados</strong> en el mismo horario para esta fecha. Por la seguridad y bienestar de los perritos, no es posible gestionar más paseos simultáneos. 🐶💜
+</div>";
+    
+}
 if(empty($paseos)){
     echo '
     <div class="container mt-5">
@@ -52,7 +65,7 @@ foreach ($paseos as $p){
                     <p class="mb-3"><i class="fa-solid fa-dollar-sign text-purple me-2"></i><strong>Precio:</strong> $<?php echo number_format($p->getPrecio_total(), 0, ',', '.'); ?></p>
                     
                     <div class="d-flex justify-content-between align-items-center">
-                        <a href="modalPaseo.php?idPaseo=<?php echo $p->getId(); ?>&idPaseador=<?php echo $id; ?>" class="btn btn-outline-purple abrir-modal" data-id="<?php echo $p->getId(); ?>" title="Ver más del paseo">
+                        <a href="modalPaseo2.php?idPaseo=<?php echo $p->getId(); ?>&idPaseador=<?php echo $id; ?>" class="btn btn-outline-purple abrir-modal" data-id="<?php echo $p->getId(); ?>" title="Ver más del paseo">
                             <i class="fas fa-eye"></i>
                         </a>
                         <a href="modalPerrito.php?idPerrito=<?php echo $p->getPerro_idPerro()->getId(); ?>" class="btn btn-outline-purple abrir-modal" data-id="<?php echo $p->getPerro_idPerro()->getId(); ?>" title="Ver info del perrito">

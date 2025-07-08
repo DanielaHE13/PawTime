@@ -119,11 +119,11 @@ $(document).ready(function(){
 	let tablaOriginal = $("#resultados").html();
 	$("#filtro").keyup(function(){
 		if($("#filtro").val().length > 2){
-			var ruta = "buscarPaseadorAjax.php?filtro=" + $("#filtro").val().replaceAll(" ", "%20");
+			var ruta = "indexAjax.php?pid=<?php echo base64_encode('presentacion/paseador/buscarPaseadorAjax.php'); ?>&filtro=" + $("#filtro").val().replaceAll(" ", "%20");
 			console.log(ruta);
 			$("#resultados").load(ruta);
 		}else{
-			$("#resultados").load("actualizarPaseadorAjax.php");
+			$("#resultados").load("indexAjax.php?pid=<?php echo base64_encode('presentacion/paseador/actualizarPaseadorAjax.php'); ?>");
 		}
 	});
  $('body').on('click', '.abrir-modal', function(e) {
@@ -140,7 +140,7 @@ $(document).ready(function(){
    $('body').on('click', '.btn-estado', function (e) {
     const idPaseador = $(this).data('id');
     const nuevoEstado = $(this).data('estado');
-    const ruta = "actualizarEstadoAjax.php?estado=" + nuevoEstado + "&idP=" + idPaseador;
+    const ruta = "indexAjax.php?pid=<?php echo base64_encode('presentacion/paseador/actualizarEstadoAjax.php'); ?>&estado=" + nuevoEstado + "&idP=" + idPaseador;
     console.log(ruta);
     $("#estado" + idPaseador).load(ruta, function () {
         if (nuevoEstado == 1) {

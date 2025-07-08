@@ -171,8 +171,10 @@ class Paseo{
         $conexion -> ejecutar($paseoDAO -> buscarPaseador($filtro));
         $paseos = array();
         while (($datos = $conexion->registro()) != null) {
+            $perro = new Perro($datos[7],$datos[8]);
+            $estado = new Estado($datos[9],$datos[10]);
             $paseador = new Paseador($datos[5],$datos[6]);
-            $paseo = new Paseo($datos[0], $datos[1], $datos[2], $datos[3], $datos[4], $paseador, $datos[7], $datos[8]);
+            $paseo = new Paseo($datos[0], $datos[1], $datos[2], $datos[3], $datos[4], $paseador, $perro, $estado);
             array_push($paseos, $paseo);
         }
         $conexion->cerrar();
@@ -315,6 +317,122 @@ class Paseo{
         $conexion->abrir();
         $conexion->ejecutar($paseoDAO->actualizarEstadoPaseo($estado));
         $conexion->cerrar();
+    }
+    
+    public function cantidadDePaseosPorPaseador() {
+        $conexion = new Conexion();
+        $paseoDAO = new PaseoDAO();
+        $conexion->abrir();
+        $conexion->ejecutar($paseoDAO->cantidadDePaseosPorPaseador());        
+        $paseos = array();        
+        while (($datos = $conexion->registro()) != null) {
+            array_push($paseos, array($datos[0],$datos[1],$datos[2],$datos[3]));
+        }        
+        $conexion->cerrar();
+        return $paseos;
+    }
+    
+    public function cantidadCompletadosVsCancelados() {
+        $conexion = new Conexion();
+        $paseoDAO = new PaseoDAO();
+        $conexion->abrir();
+        $conexion->ejecutar($paseoDAO->cantidadCompletadosVsCancelados());
+        $resultados = array();
+        
+        while (($datos = $conexion->registro()) != null) {
+            array_push($resultados, array($datos[0], $datos[1]));
+        }
+        
+        $conexion->cerrar();
+        return $resultados;
+    }
+    
+    
+    public function cantidadDePaseosPorMes() {
+        $conexion = new Conexion();
+        $paseoDAO = new PaseoDAO();
+        $conexion->abrir();
+        $conexion->ejecutar($paseoDAO->cantidadDePaseosPorMes());
+        $paseosMes = array();
+        
+        while (($datos = $conexion->registro()) != null) {
+            array_push($paseosMes, array($datos[0], $datos[1]));
+        }
+        
+        $conexion->cerrar();
+        return $paseosMes;
+    }
+    
+    public function cantidadPaseosUltimos6Meses($idPaseador) {
+        $conexion = new Conexion();
+        $dao = new PaseoDAO();
+        $conexion->abrir();
+        $conexion->ejecutar($dao->cantidadPaseosUltimos6Meses($idPaseador));
+        $resultados = array();
+        while (($datos = $conexion->registro()) != null) {
+            array_push($resultados, array($datos[0], $datos[1]));
+        }
+        $conexion->cerrar();
+        return $resultados;
+    }
+    
+    public function totalPaseos($idPaseador) {
+        $conexion = new Conexion();
+        $dao = new PaseoDAO();
+        $conexion->abrir();
+        $conexion->ejecutar($dao->totalPaseos($idPaseador));
+        $total = $conexion->registro()[0];
+        $conexion->cerrar();
+        return $total;
+    }
+    
+    public function totalGanado($idPaseador) {
+        $conexion = new Conexion();
+        $dao = new PaseoDAO();
+        $conexion->abrir();
+        $conexion->ejecutar($dao->totalGanado($idPaseador));
+        $total = $conexion->registro()[0];
+        $conexion->cerrar();
+        return $total ?? 0;
+    }
+    
+    public function duracionPromedioPorPaseo($idPaseador) {
+        $conexion = new Conexion();
+        $dao = new PaseoDAO();
+        $conexion->abrir();
+        $conexion->ejecutar($dao->duracionPromedioPorPaseo($idPaseador));
+        $promedio = $conexion->registro()[0];
+        $conexion->cerrar();
+        return round($promedio ?? 0);
+    }
+    
+    public function distribucionEstadosPorPaseador($idPaseador) {
+        $conexion = new Conexion();
+        $dao = new PaseoDAO();
+        $conexion->abrir();
+        $conexion->ejecutar($dao->distribucionEstadosPorPaseador($idPaseador));        
+        $estados = array();
+        while (($datos = $conexion->registro()) != null) {
+            array_push($estados, array($datos[0], $datos[1]));
+        }
+        
+        $conexion->cerrar();
+        return $estados;
+    }
+    
+    public function contarPaseosAceptadosSolapados($idPaseador, $fecha, $horaInicio, $horaFin) {
+        $conexion = new Conexion();
+        $paseoDAO = new PaseoDAO();
+        $conexion->abrir();
+        $conexion->ejecutar(
+            $paseoDAO->contarPaseosAceptadosSolapados($idPaseador, $fecha, $horaInicio, $horaFin)
+            );
+        $resultado = 0;
+        if ($registro = $conexion->registro()) {
+            $resultado = $registro[0];
+        }
+        $conexion->cerrar();
+        return $resultado;
     }
     
 }

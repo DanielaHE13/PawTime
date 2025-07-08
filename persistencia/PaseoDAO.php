@@ -20,16 +20,32 @@ class PaseoDAO{
         $this->Estado_idEstado = $Estado_idEstado;
     }
     
-    public function consultarTodos($rol,$idP){
-        $consulta = "select idPaseo, fecha, hora_inicio, hora_fin, precio_total, Paseador_idPaseador, a.nombre, a.apellido, Perro_idPerro, e.nombre, Estado_idEstado, s.nombre	
-                from paseo p join paseador a on (p.Paseador_idPaseador = a.idPaseador)
-                             join perro e on (p.Perro_idPerro = e.idPerro)
-                             join estado s on (p.Estado_idEstado = s.idEstado)";
-        if($rol = "paseador"){
-            $consulta .= "where a.idPaseador = " . $idP ;
+    public function consultarTodos($rol, $idP) {
+        $consulta = "SELECT
+                    p.idPaseo,
+                    p.fecha,
+                    p.hora_inicio,
+                    p.hora_fin,
+                    p.precio_total,
+                    a.idPaseador,
+                    a.nombre,
+                    a.apellido,
+                    e.idPerro,
+                    e.nombre,
+                    s.idEstado,
+                    s.nombre
+                FROM paseo p
+                JOIN paseador a ON p.Paseador_idPaseador = a.idPaseador
+                JOIN perro e ON p.Perro_idPerro = e.idPerro
+                JOIN estado s ON p.Estado_idEstado = s.idEstado";
+        
+        if ($rol == "paseador") {
+            $consulta .= " WHERE a.idPaseador = " . $idP;
         }
+        
         return $consulta;
     }
+    
     
     public function consultarPorPaseadorProgramados($idP){
         return "select idPaseo, fecha, hora_inicio, hora_fin, precio_total, Paseador_idPaseador, a.nombre, a.apellido, Perro_idPerro, e.nombre, Estado_idEstado, s.nombre
@@ -77,7 +93,7 @@ class PaseoDAO{
     }
     
     public function buscarPaseador($filtro){
-        $consulta = "select p.idPaseo, p.fecha, p.hora_inicio, p.hora_fin, p.precio_total, a.idPaseador, a.nombre, e.nombre, s.nombre
+        $consulta = "select p.idPaseo, p.fecha, p.hora_inicio, p.hora_fin, p.precio_total, a.idPaseador, a.nombre, e.idPerro, e.nombre, s.idEstado, s.nombre
                 from paseo p join paseador a on (p.Paseador_idPaseador = a.idPaseador)
                              join perro e on (p.Perro_idPerro = e.idPerro)
                              join estado s on (p.Estado_idEstado = s.idEstado)
@@ -127,4 +143,70 @@ class PaseoDAO{
     public function actualizarEstadoPaseo($estado){
         return "UPDATE `paseo` SET `Estado_idEstado`='" . $estado . "' WHERE idPaseo = '" . $this->id . "'";
     }
+    
+    public function cantidadDePaseosPorPaseador(){
+        return "SELECT p.idPaseador, p.nombre, p.apellido, COUNT(a.idPaseo)
+                from paseador p LEFT JOIN paseo a on (p.idPaseador = a.Paseador_idPaseador)
+                group by p.idPaseador";
+    }
+    
+    public function cantidadCompletadosVsCancelados() {
+        return "SELECT e.nombre, COUNT(p.idPaseo)
+            FROM paseo p
+            INNER JOIN estado e ON (p.Estado_idEstado = e.idEstado)
+            WHERE e.nombre IN ('Completado', 'Cancelado')
+            GROUP BY e.nombre";
+    }
+    
+    public function cantidadDePaseosPorMes() {
+        return "SELECT DATE_FORMAT(fecha, '%Y-%m') AS mes, COUNT(idPaseo)
+            FROM paseo
+            GROUP BY mes
+            ORDER BY mes ASC";
+    }
+    
+    public function cantidadPaseosUltimos6Meses($idPaseador) {
+        return "SELECT DATE_FORMAT(fecha, '%Y-%m') AS mes, COUNT(idPaseo)
+            FROM paseo
+            WHERE Paseador_idPaseador = $idPaseador
+              AND fecha >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+            GROUP BY mes
+            ORDER BY mes ASC";
+    }
+    
+    public function totalPaseos($idPaseador) {
+        return "SELECT COUNT(idPaseo) FROM paseo WHERE Paseador_idPaseador = $idPaseador";
+    }
+    
+    public function totalGanado($idPaseador) {
+        return "SELECT SUM(precio_total)
+            FROM paseo
+            INNER JOIN estado ON paseo.Estado_idEstado = estado.idEstado
+            WHERE paseo.Paseador_idPaseador = $idPaseador
+              AND estado.nombre = 'Completado'";
+    }
+    
+    public function distribucionEstadosPorPaseador($idPaseador) {
+        return "SELECT estado.nombre, COUNT(idPaseo)
+            FROM paseo
+            INNER JOIN estado ON paseo.Estado_idEstado = estado.idEstado
+            WHERE paseo.Paseador_idPaseador = $idPaseador
+              AND estado.nombre IN ('Completado', 'Programado', 'Cancelado', 'En curso', 'Aceptado')
+            GROUP BY estado.nombre";
+    }
+    
+    
+    public function contarPaseosAceptadosSolapados($idPaseador, $fecha, $horaInicio, $horaFin) {
+        return "SELECT COUNT(*)
+            FROM paseo
+            WHERE Paseador_idPaseador = '$idPaseador'
+              AND fecha = '$fecha'
+              AND Estado_idEstado = 1
+              AND (
+                    (hora_inicio < '$horaFin' AND hora_fin > '$horaInicio')
+                  )";
+    }
+    
+    
+    
 }

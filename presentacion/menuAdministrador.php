@@ -32,7 +32,16 @@ $administrador->consultar();
   
   <div class="collapse navbar-collapse mt-3 mt-lg-0" id="navbarSupportedContent">
     <ul class="navbar-nav ms-auto">
+	
+	<li class="nav-item me-4">
+      <a class="nav-link fw-bold fs-5" 
+         href="?pid=<?php echo base64_encode('presentacion/estadisticas/estadisticasGeneral.php'); ?>" 
+         style="color: #4b0082; border-radius: 12px;">
+        <i class="fa-solid fa-chart-line me-1"></i> Estadisticas
+      </a>
+    </li>
 
+	
       <li class="nav-item dropdown me-4">
         <a class="nav-link dropdown-toggle fw-bold fs-5" href="#" role="button" data-bs-toggle="dropdown"
            aria-expanded="false" style="color: #4b0082; border-radius: 12px;">

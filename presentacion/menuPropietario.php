@@ -66,7 +66,11 @@ $propietario->consultar();
       style="color: #4b0082;  border-radius: 12px;">
       <i class="fa-solid fa-walking me-2 fa-lg"></i>Mis Paseos
     </a>
-
+	<a href="?pid=<?php echo base64_encode('presentacion/estadisticas/estadisticasGeneral.php') ?>"
+      class="btn fw-bold px-4 py-2"
+      style="color: #4b0082; border-radius: 12px;">
+      <i class="fa-solid fa-chart-line me-2 fa-lg"></i>Estadisticas general
+    </a>
     <!-- Botón que activa el modal de cerrar sesión -->
     <!-- Botón que abre el modal de cerrar sesión -->
     <a href="#" class="btn fw-bold px-4 py-2"

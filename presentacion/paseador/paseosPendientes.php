@@ -82,7 +82,7 @@ foreach ($paseos as $p){
                     </p>
         
                     <div class="d-flex justify-content-around align-items-center">
-                        <a href="modalPaseo.php?idPaseo=<?php echo $p->getId(); ?>&idPaseador=<?php echo $id; ?>" 
+                        <a href="modalPaseo2.php?idPaseo=<?php echo $p->getId(); ?>&idPaseador=<?php echo $id; ?>" 
                            class="btn btn-outline-purple abrir-modal" 
                            data-id="<?php echo $p->getId(); ?>" 
                            title="Ver más del paseo">

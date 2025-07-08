@@ -20,6 +20,7 @@ session_start();
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
 
@@ -66,8 +67,11 @@ $paginas_con_autenticacion = array(
     "presentacion/propietario/editarObservacionesMascota.php",
     "presentacion/paseador/consultarPaseo.php",
     "presentacion/paseador/paseosPendientes.php",
-    "factura.php",
-    "presentacion/paseador/paseosCompletados.php"
+    "presentacion/paseador/paseosCompletados.php",
+    "presentacion/paseador/estadisticasPaseador.php",
+    "presentacion/estadisticas/estadisticasGeneral.php",
+    "presentacion/estadisticas/estadisticasPropias.php",
+    "presentacion/paseador/editarFotoObligatorio.php",
 );
 
 

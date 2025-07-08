@@ -104,7 +104,6 @@ $estado ->consultar();
                         <div class="d-flex flex-wrap gap-3 align-items-center">
                             <?php
                             foreach ($perritos as $p) {
-                                if($paseo->getEstado_idEstado() != 4){
                                 $foto_path = "imagen/perros/" . $p->getFoto();
                                 ?>
                                 <div class="d-flex flex-column align-items-center p-2 rounded" style="background-color: #E3CFF5;">
@@ -114,7 +113,7 @@ $estado ->consultar();
                                     <span class="small text-purple-600">Propietario: <?php echo $p->getIdPropietario()->getNombre() . " " . $p->getIdPropietario()->getApellido(); ?></span>
                                 </div>
                                 <?php
-                                }}
+                                }
                             ?>
                         </div>
                     </td>
